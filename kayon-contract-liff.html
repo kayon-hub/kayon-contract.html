@@ -288,10 +288,10 @@ body{
     <div class="field-label">課程方案 <span class="req">*</span></div>
     <select id="courseType" onchange="sync();updateP360()">
       <option value="">— 請選擇課程方案 —</option>
-      <option value="創作啟航計畫 × 4｜$4,000" data-url="https://www.pro360.com.tw/shop/item/41507">🎵 創作啟航計畫 × 4堂｜$4,000</option>
-      <option value="創作啟航計畫 × 8+1｜$8,000" data-url="https://www.pro360.com.tw/shop/item/41507">🎵 創作啟航計畫 × 8+1堂｜$8,000</option>
-      <option value="聲音啟航計畫 × 4｜$4,200" data-url="https://www.pro360.com.tw/shop/item/41205">🎙 聲音啟航計畫 × 4堂｜$4,200</option>
-      <option value="聲音啟航計畫 × 8+1｜$8,000" data-url="https://www.pro360.com.tw/shop/item/41205">🎙 聲音啟航計畫 × 8+1堂｜$8,000</option>
+      <option value="創作啟航計畫 A｜4堂｜$4,200" data-url="https://www.pro360.com.tw/shop/item/41524">🎵 創作啟航計畫 A｜4堂｜$4,200</option>
+      <option value="創作啟航計畫 B｜8+1堂｜$8,000" data-url="https://www.pro360.com.tw/shop/item/41524">🎵 創作啟航計畫 B｜8+1堂｜$8,000</option>
+      <option value="聲音啟航計畫 A｜4堂｜$4,200" data-url="https://www.pro360.com.tw/shop/item/41524">🎙 聲音啟航計畫 A｜4堂｜$4,200</option>
+      <option value="聲音啟航計畫 B｜8+1堂｜$8,000" data-url="https://www.pro360.com.tw/shop/item/41524">🎙 聲音啟航計畫 B｜8+1堂｜$8,000</option>
     </select>
   </div>
   <div id="minorBanner" style="display:none"><div class="minor-banner">⚠️ 未滿18歲，需填寫法定代理人同意書</div></div>
@@ -781,10 +781,10 @@ function renderGFiles(t){
 
 /* ─── PRO360 PAYMENT ─── */
 const P360_URLS={
-  '創作啟航計畫 × 4｜$4,000':'https://www.pro360.com.tw/shop/item/41507',
-  '創作啟航計畫 × 8+1｜$8,000':'https://www.pro360.com.tw/shop/item/41507',
-  '聲音啟航計畫 × 4｜$4,200':'https://www.pro360.com.tw/shop/item/41205',
-  '聲音啟航計畫 × 8+1｜$8,000':'https://www.pro360.com.tw/shop/item/41205',
+  '創作啟航計畫 A｜4堂｜$4,200':'https://www.pro360.com.tw/shop/item/41524',
+  '創作啟航計畫 B｜8+1堂｜$8,000':'https://www.pro360.com.tw/shop/item/41524',
+  '聲音啟航計畫 A｜4堂｜$4,200':'https://www.pro360.com.tw/shop/item/41524',
+  '聲音啟航計畫 B｜8+1堂｜$8,000':'https://www.pro360.com.tw/shop/item/41524',
 };
 function updateP360(){
   const sel=document.getElementById('courseType');
