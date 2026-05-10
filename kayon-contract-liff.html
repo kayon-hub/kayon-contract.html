@@ -286,13 +286,12 @@ body{
   </div>
   <div class="field">
     <div class="field-label">課程方案 <span class="req">*</span></div>
-    <select id="courseType" onchange="sync()">
+    <select id="courseType" onchange="sync();updateP360()">
       <option value="">— 請選擇課程方案 —</option>
-      <option>詞曲創作 Songwriting</option>
-      <option>編曲製作 Arrangement</option>
-      <option>混音基礎 Mixing Basics</option>
-      <option>創作陪伴與作品指導</option>
-      <option>綜合方案（客製化）</option>
+      <option value="創作啟航計畫 × 4｜$4,000" data-url="https://www.pro360.com.tw/shop/item/41507">🎵 創作啟航計畫 × 4堂｜$4,000</option>
+      <option value="創作啟航計畫 × 8+1｜$8,000" data-url="https://www.pro360.com.tw/shop/item/41507">🎵 創作啟航計畫 × 8+1堂｜$8,000</option>
+      <option value="聲音啟航計畫 × 4｜$4,200" data-url="https://www.pro360.com.tw/shop/item/41205">🎙 聲音啟航計畫 × 4堂｜$4,200</option>
+      <option value="聲音啟航計畫 × 8+1｜$8,000" data-url="https://www.pro360.com.tw/shop/item/41205">🎙 聲音啟航計畫 × 8+1堂｜$8,000</option>
     </select>
   </div>
   <div id="minorBanner" style="display:none"><div class="minor-banner">⚠️ 未滿18歲，需填寫法定代理人同意書</div></div>
@@ -422,6 +421,7 @@ body{
     <div class="meta-row"><span class="meta-key">LINE 通知</span><span class="meta-val ok">已發送 ✓</span></div>
     <div class="meta-row"><span class="meta-key">Google Drive</span><span class="meta-val ok">已儲存 ✓</span></div>
   </div>
+  <button class="btn-primary" onclick="goP360()" style="width:100%;margin-bottom:10px">💳 前往 PRO360 完成付款 →</button>
   <button class="btn-line" id="lineCloseBtn" onclick="closeLiff()">
     <div class="line-icon">L</div>返回 LINE 對話
   </button>
@@ -442,8 +442,9 @@ body{
 /* ═══════════════════════════════════════
    LIFF INITIALIZATION
 ═══════════════════════════════════════ */
-const LIFF_ID = '2010027736-S4IwSKGt';7-k0iEMkIu'; // Replace with your actual LIFF ID
-const GAS_URL =  'https://script.google.com/macros/s/AKfycbzpMIhdFGQZ23pBroz01mR7F-rJb3LguJsULP9Z3NDw0sWDVcqA_GalRsgMlhz1--Xs/exec';
+const LIFF_ID = '2009971827-k0iEMkIu'; // Replace with your actual LIFF ID
+const GAS_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
+
 let liffProfile = null;
 
 async function initLIFF() {
@@ -543,7 +544,54 @@ function go(s) {
   renderFoot(); sync();
 }
 
-function next() { if (cur < sections.length-1) go(sections[cur+1]); else submit(); }
+function showAlert(msg){
+  let el=document.getElementById('alertBanner');
+  if(!el){
+    el=document.createElement('div');el.id='alertBanner';
+    el.style.cssText='position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:9999;max-width:430px;width:100%;background:#c0392b;color:#fff;padding:12px 20px;font-size:13px;display:flex;align-items:center;gap:8px;animation:slideDown 0.3s ease';
+    document.body.appendChild(el);
+    const s=document.createElement('style');s.textContent='@keyframes slideDown{from{transform:translateX(-50%) translateY(-100%)}to{transform:translateX(-50%) translateY(0)}}';document.head.appendChild(s);
+  }
+  el.innerHTML='⚠️ '+msg;el.style.display='flex';
+  clearTimeout(el._t);el._t=setTimeout(()=>el.style.display='none',3500);
+}
+
+function validateStep(section){
+  if(section==='info'){
+    if(!document.getElementById('studentName').value.trim()){showAlert('請填寫學員姓名');return false;}
+    if(!document.getElementById('studentBirth').value){showAlert('請填寫出生日期');return false;}
+    if(!document.getElementById('studentPhone').value.trim()){showAlert('請填寫聯絡電話');return false;}
+    if(!document.getElementById('studentEmail').value.trim()){showAlert('請填寫電子信箱');return false;}
+    if(!document.getElementById('courseType').value){showAlert('請選擇課程方案');return false;}
+  }
+  if(section==='guardian'){
+    const age=parseInt(document.getElementById('studentAge').value);
+    if(!isNaN(age)&&age<18){
+      if(!document.getElementById('gN').value.trim()){showAlert('請填寫法定代理人姓名');return false;}
+      if(!document.getElementById('gR').value){showAlert('請選擇法定代理人關係');return false;}
+      if(!document.getElementById('gP').value.trim()){showAlert('請填寫法定代理人聯絡電話');return false;}
+      if(!document.getElementById('gE').value.trim()){showAlert('請填寫法定代理人電子信箱');return false;}
+      const hasId=gDocs.id&&gDocs.id.length>0;
+      const hasHh=gDocs.hh&&gDocs.hh.length>0;
+      if(!hasId&&!hasHh){showAlert('未成年學員須上傳法定代理人身份證明文件（身分證或戶口名簿）');return false;}
+      const checks=document.querySelectorAll('#gChecks .check-box');
+      if(![...checks].every(c=>c.classList.contains('checked'))){showAlert('請勾選所有法定代理人同意事項');return false;}
+    }
+  }
+  if(section==='sign'){
+    const cv=document.getElementById('cv0');
+    if(cv){
+      const px=cv.getContext('2d').getImageData(0,0,cv.width,cv.height).data;
+      if(!Array.from(px).some((v,i)=>i%4===3&&v>0)){showAlert('請完成學員電子簽名');return false;}
+    }
+  }
+  return true;
+}
+
+function next() {
+  if(!validateStep(sections[cur])) return;
+  if (cur < sections.length-1) go(sections[cur+1]); else submit();
+}
 function prev() { if (cur > 0) go(sections[cur-1]); }
 
 function renderFoot() {
@@ -729,6 +777,25 @@ function removeGFile(t,j){gDocs[t].splice(j,1);renderGFiles(t);}
 function renderGFiles(t){
   const c=document.getElementById(t==='id'?'gIdFiles':'gHhFiles');c.innerHTML='';
   gDocs[t].forEach((fObj,j)=>c.appendChild(makeFileItem(fObj,`()=>{removeGFile('${t}',${j});}`)));
+}
+
+/* ─── PRO360 PAYMENT ─── */
+const P360_URLS={
+  '創作啟航計畫 × 4｜$4,000':'https://www.pro360.com.tw/shop/item/41507',
+  '創作啟航計畫 × 8+1｜$8,000':'https://www.pro360.com.tw/shop/item/41507',
+  '聲音啟航計畫 × 4｜$4,200':'https://www.pro360.com.tw/shop/item/41205',
+  '聲音啟航計畫 × 8+1｜$8,000':'https://www.pro360.com.tw/shop/item/41205',
+};
+function updateP360(){
+  const sel=document.getElementById('courseType');
+  const url=sel.options[sel.selectedIndex]?.getAttribute('data-url');
+  if(url) window._p360url=url;
+}
+function goP360(){
+  const course=document.getElementById('courseType')?.value||'';
+  const url=P360_URLS[course]||window._p360url||'https://www.pro360.com.tw';
+  if(liff.isInClient()){liff.openWindow({url,external:true});}
+  else{window.open(url,'_blank');}
 }
 
 /* ─── SUBMIT ─── */
