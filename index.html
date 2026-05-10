@@ -426,13 +426,12 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
   </div>
   <div class="field">
     <div class="field-label">課程方案 <span class="req">*</span></div>
-    <select id="courseType" onchange="syncInfo()">
+    <select id="courseType" onchange="syncInfo();updatePro360Link()">
       <option value="">— 請選擇課程方案 —</option>
-      <option value="詞曲創作 Songwriting">詞曲創作 — Songwriting</option>
-      <option value="編曲製作 Arrangement">編曲製作 — Arrangement</option>
-      <option value="混音基礎 Mixing Basics">混音基礎 — Mixing Basics</option>
-      <option value="創作陪伴與作品指導">創作陪伴與作品指導</option>
-      <option value="綜合方案（客製化）">綜合方案（客製化）</option>
+      <option value="創作啟航計畫 × 4｜$4,000" data-url="https://www.pro360.com.tw/shop/item/41507">🎵 創作啟航計畫 × 4堂｜$4,000</option>
+      <option value="創作啟航計畫 × 8+1｜$8,000" data-url="https://www.pro360.com.tw/shop/item/41507">🎵 創作啟航計畫 × 8+1堂｜$8,000</option>
+      <option value="聲音啟航計畫 × 4｜$4,200" data-url="https://www.pro360.com.tw/shop/item/41205">🎙 聲音啟航計畫 × 4堂｜$4,200</option>
+      <option value="聲音啟航計畫 × 8+1｜$8,000" data-url="https://www.pro360.com.tw/shop/item/41205">🎙 聲音啟航計畫 × 8+1堂｜$8,000</option>
     </select>
   </div>
   <div id="minorNotice" style="display:none">
@@ -734,7 +733,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     <div class="meta-row"><span class="meta-key">Google Drive</span><span class="meta-val ok">已儲存 ✓</span></div>
     <div class="meta-row"><span class="meta-key">Email 通知</span><span class="meta-val ok">已發送 ✓</span></div>
   </div>
-  <button class="btn-primary" onclick="exportPDF()" style="margin-bottom:10px;width:100%">⬇ 下載合約 PDF</button>
+  <button class="btn-primary" id="pro360PayBtn" onclick="goToPro360()" style="margin-bottom:10px;width:100%">💳 前往 PRO360 完成付款 →</button>
+  <button class="btn-secondary" style="width:100%;margin-bottom:8px" onclick="exportPDF()">⬇ 下載合約 PDF</button>
   <button class="btn-secondary" style="width:100%" onclick="window.open('https://liff.line.me/2009971827-k0iEMkIu?view=register','_blank')">前往 LINE 官方帳號 →</button>
 </div>
 
@@ -799,7 +799,68 @@ function switchSection(s){
   syncInfo();
 }
 
+/* ── 顯示錯誤提示 ── */
+function showAlert(msg){
+  let el=document.getElementById('alertBanner');
+  if(!el){
+    el=document.createElement('div');el.id='alertBanner';
+    el.style.cssText='position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:9999;max-width:430px;width:100%;background:#c0392b;color:#fff;padding:12px 20px;font-size:13px;display:flex;align-items:center;gap:8px;animation:slideDown 0.3s ease';
+    document.body.appendChild(el);
+    const style=document.createElement('style');
+    style.textContent='@keyframes slideDown{from{transform:translateX(-50%) translateY(-100%)}to{transform:translateX(-50%) translateY(0)}}';
+    document.head.appendChild(style);
+  }
+  el.innerHTML='⚠️ '+msg;el.style.display='flex';
+  clearTimeout(el._timer);el._timer=setTimeout(()=>el.style.display='none',3500);
+}
+
+/* ── 驗證各步驟必填 ── */
+function validateStep(section){
+  if(section==='info'){
+    if(!document.getElementById('studentName').value.trim()){showAlert('請填寫學員姓名');return false;}
+    if(!document.getElementById('studentBirth').value){showAlert('請填寫出生日期');return false;}
+    if(!document.getElementById('studentPhone').value.trim()){showAlert('請填寫聯絡電話');return false;}
+    if(!document.getElementById('studentEmail').value.trim()){showAlert('請填寫電子信箱');return false;}
+    if(!document.getElementById('courseType').value){showAlert('請選擇課程方案');return false;}
+  }
+  if(section==='guardian'){
+    // 只有未成年才驗證
+    const ageVal=document.getElementById('studentAge').value;
+    const age=parseInt(ageVal);
+    if(!isNaN(age)&&age<18){
+      if(!document.getElementById('guardianName').value.trim()){showAlert('請填寫法定代理人姓名');return false;}
+      if(!document.getElementById('guardianRel').value){showAlert('請選擇法定代理人與學員關係');return false;}
+      if(!document.getElementById('guardianPhone').value.trim()){showAlert('請填寫法定代理人聯絡電話');return false;}
+      if(!document.getElementById('guardianEmail').value.trim()){showAlert('請填寫法定代理人電子信箱');return false;}
+      // 身份證明文件：身分證或戶口名簿至少一個
+      const hasId=guardianFiles.id&&guardianFiles.id.length>0;
+      const hasHh=guardianFiles.household&&guardianFiles.household.length>0;
+      if(!hasId&&!hasHh){showAlert('未成年學員須上傳法定代理人身份證明文件（身分證或戶口名簿）');return false;}
+      // 同意書勾選
+      const checks=document.querySelectorAll('#guardianChecks .check-box');
+      const allChecked=[...checks].every(c=>c.classList.contains('checked'));
+      if(!allChecked){showAlert('請勾選所有法定代理人同意事項');return false;}
+    }
+  }
+  if(section==='sign'){
+    // 學員簽名
+    const cv=document.getElementById('canvas0');
+    if(cv){
+      const ctx=cv.getContext('2d');
+      const px=ctx.getImageData(0,0,cv.width,cv.height).data;
+      const signed=Array.from(px).some((v,i)=>i%4===3&&v>0);
+      if(!signed){showAlert('請完成學員電子簽名');return false;}
+    }
+    // 最終同意勾選
+    const finalChecks=document.querySelectorAll('#finalAgreements .check-box');
+    const allFinal=[...finalChecks].every(c=>c.classList.contains('checked'));
+    if(!allFinal){showAlert('請勾選所有簽署確認事項');return false;}
+  }
+  return true;
+}
+
 function nextStep(){
+  if(!validateStep(sections[cur])) return;
   if(cur<sections.length-1) switchSection(sections[cur+1]);
   else submitContract();
 }
@@ -1077,9 +1138,30 @@ function submitContract(){
   sendToGAS({contractNo:no,name,course,time:now});
 }
 
+/* ─── PRO360 PAYMENT ─── */
+const PRO360_URLS = {
+  '創作啟航計畫 × 4｜$4,000': 'https://www.pro360.com.tw/shop/item/41507',
+  '創作啟航計畫 × 8+1｜$8,000': 'https://www.pro360.com.tw/shop/item/41507',
+  '聲音啟航計畫 × 4｜$4,200': 'https://www.pro360.com.tw/shop/item/41205',
+  '聲音啟航計畫 × 8+1｜$8,000': 'https://www.pro360.com.tw/shop/item/41205',
+};
+
+function updatePro360Link(){
+  // 可在選課時預先記錄付款連結
+  const sel=document.getElementById('courseType');
+  const url=sel.options[sel.selectedIndex]?.getAttribute('data-url');
+  if(url) window._pro360Url=url;
+}
+
+function goToPro360(){
+  const course=document.getElementById('courseType')?.value||'';
+  const url=PRO360_URLS[course]||window._pro360Url||'https://www.pro360.com.tw';
+  window.open(url,'_blank');
+}
+
 /* ─── GAS WEBHOOK ─── */
 function sendToGAS(data){
-  const GAS_URL = 'https://script.google.com/macros/s/AKfycbzpMIhdFGQZ23pBroz01mR7F-rJb3LguJsULP9Z3NDw0sWDVcqA_GalRsgMlhz1--Xs/exec';
+  const GAS_URL='https://script.google.com/macros/s/YOUR_GAS_DEPLOYMENT_ID/exec';
   fetch(GAS_URL,{
     method:'POST',
     mode:'no-cors',
