@@ -394,7 +394,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     </div>
   </div>
   <div class="info-card">
-    <div class="info-row"><span class="info-key">課程類型</span><span class="info-val gold">線上音樂創作課程</span></div>
+    <div class="info-row"><span class="info-key">課程方案</span><span class="info-val gold" id="displayCourseType">請先選擇課程方案</span></div>
     <div class="info-row"><span class="info-key">合約編號</span><span class="info-val mono" id="contractNo">—</span></div>
     <div class="info-row"><span class="info-key">簽署日期</span><span class="info-val mono" id="signDate">—</span></div>
   </div>
@@ -724,7 +724,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 <div class="success-screen" id="successScreen">
   <div class="success-ring">✓</div>
   <div class="success-title">合約簽署完成</div>
-  <div class="success-sub">您的課程合約已成功提交並儲存。<br>確認通知將發送至您的電子信箱及 LINE 官方帳號。</div>
+  <div class="success-sub">合約已完成簽署並儲存。<br>KAYON STUDIO 將透過 LINE 與您確認課程時間，<br>請返回 LINE 官方帳號等候通知。</div>
   <div class="success-card">
     <div class="meta-row"><span class="meta-key">合約編號</span><span class="meta-val" id="sNo">—</span></div>
     <div class="meta-row"><span class="meta-key">學員姓名</span><span class="meta-val" id="sName">—</span></div>
@@ -733,9 +733,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     <div class="meta-row"><span class="meta-key">Google Drive</span><span class="meta-val ok">已儲存 ✓</span></div>
     <div class="meta-row"><span class="meta-key">Email 通知</span><span class="meta-val ok">已發送 ✓</span></div>
   </div>
-  <button class="btn-primary" id="pro360PayBtn" onclick="goToPro360()" style="margin-bottom:10px;width:100%">💳 前往 PRO360 完成付款 →</button>
-  <button class="btn-secondary" style="width:100%;margin-bottom:8px" onclick="exportPDF()">⬇ 下載合約 PDF</button>
-  <button class="btn-secondary" style="width:100%" onclick="window.open('https://liff.line.me/2009971827-k0iEMkIu?view=register','_blank')">前往 LINE 官方帳號 →</button>
+  <button class="btn-primary" style="margin-bottom:10px;width:100%" onclick="window.open('https://liff.line.me/2009971827-k0iEMkIu?view=register','_blank')">返回 LINE 官方帳號 →</button>
+  <button class="btn-secondary" style="width:100%" onclick="exportPDF()">⬇ 下載合約 PDF</button>
 </div>
 
 </div><!-- .content -->
@@ -782,9 +781,15 @@ function calcAge(){
 }
 
 function syncInfo(){
-  document.getElementById('g_name').textContent=document.getElementById('studentName').value||'—';
-  document.getElementById('g_birth').textContent=document.getElementById('studentBirth').value||'—';
-  document.getElementById('g_course').textContent=document.getElementById('courseType').value||'—';
+  const name=document.getElementById('studentName').value||'—';
+  const course=document.getElementById('courseType').value||'—';
+  const birth=document.getElementById('studentBirth').value||'—';
+  document.getElementById('g_name').textContent=name;
+  document.getElementById('g_birth').textContent=birth;
+  document.getElementById('g_course').textContent=course;
+  // 動態更新合約頁課程顯示
+  const disp=document.getElementById('displayCourseType');
+  if(disp) disp.textContent=course||'請先選擇課程方案';
 }
 
 /* ─── NAVIGATION ─── */
