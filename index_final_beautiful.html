@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>KAYON STUDIO｜線上課程電子合約</title>
+<meta name="description" content="KAYON STUDIO KARBØN × GAIA ENTERTAINMENT 線上課程電子合約簽署系統">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ─── 原始黑金風格樣式 ─── */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --gold:#C9A84C;
+  --gold-light:#E8C96A;
+  --gold-dim:#8B6E2E;
+  --gold-glow:rgba(201,168,76,0.15);
+  --bg:#0A0A0A;
+  --bg2:#111111;
+  --bg3:#181818;
+  --bg4:#222222;
+  --border:#252525;
+  --border-gold:rgba(201,168,76,0.22);
+  --text:#F0EDE6;
+  --text2:#888;
+  --text3:#444;
+  --radius:14px;
+  --radius-sm:9px;
+  --transition:0.25s cubic-bezier(0.4,0,0.2,1);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.app{max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;position:relative}
+.header{padding:18px 20px 14px;border-bottom:1px solid var(--border);background:rgba(10,10,10,0.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);position:sticky;top:0;z-index:200}
+.header-row{display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-mark{width:32px;height:32px;background:var(--gold);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#000;letter-spacing:0.5px;flex-shrink:0}
+.logo-name{font-size:13px;font-weight:500;color:var(--text);letter-spacing:0.4px}
+.status-pill{background:rgba(201,168,76,0.1);border:1px solid var(--border-gold);color:var(--gold);font-size:10px;padding:4px 10px;border-radius:20px;letter-spacing:0.6px;white-space:nowrap;transition:var(--transition)}
+.progress-wrap{padding:16px 20px 4px;background:var(--bg)}
+.steps{display:flex;align-items:center}
+.step{display:flex;align-items:center;flex:1}
+.step:last-child{flex:0}
+.step-dot{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:var(--text3);background:var(--bg2);flex-shrink:0;transition:var(--transition)}
+.step-line{flex:1;height:1px;background:var(--border);transition:var(--transition)}
+.step.active .step-dot{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.08)}
+.step.done .step-dot{border-color:var(--gold);background:var(--gold);color:#000;font-weight:600}
+.step.done .step-line,.step.active .step-line{background:var(--gold-dim)}
+.tabs-wrap{background:var(--bg);border-bottom:1px solid var(--border);padding:10px 20px 0;overflow-x:auto;scrollbar-width:none;display:flex;gap:6px;-webkit-overflow-scrolling:touch}
+.tab{padding:7px 16px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap;cursor:pointer;border:1px solid var(--border);color:var(--text2);background:transparent;transition:var(--transition);letter-spacing:0.4px;margin-bottom:10px}
+.tab.active{background:var(--gold);color:#000;border-color:var(--gold)}
+.content{flex:1;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.page{display:none;animation:fadeIn 0.3s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.info-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:16px;position:relative;overflow:hidden}
+.info-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold) 0%,transparent 100%)}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)}
+.info-row:last-child{border-bottom:none}
+.info-key{font-size:12px;color:var(--text2)}
+.info-val{font-size:12px;color:var(--text);text-align:right}
+.field{margin-bottom:14px}
+.field-label{font-size:11px;color:var(--text2);letter-spacing:0.6px;margin-bottom:7px;display:flex;align-items:center;gap:4px;text-transform:uppercase}
+.req{color:var(--gold);font-size:10px}
+.field input,.field select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 14px;font-size:13px;color:var(--text);outline:none;transition:border-color var(--transition)}
+.field input:focus,.field select:focus{border-color:var(--gold-dim);background:rgba(201,168,76,0.03)}
+.btn-primary{width:100%;background:var(--gold);color:#000;border:none;padding:14px;border-radius:var(--radius-sm);font-weight:600;font-size:14px;cursor:pointer;transition:var(--transition);margin-top:20px}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed}
+.canvas-wrap{background:var(--bg3);border:1px dashed rgba(201,168,76,0.3);border-radius:var(--radius-sm);height:130px;display:flex;align-items:center;justify-content:center;cursor:crosshair;position:relative;overflow:hidden;touch-action:none}
+.canvas-wrap canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+.canvas-hint{font-size:12px;color:var(--text3);pointer-events:none;user-select:none}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <div class="header-row">
+      <div class="logo">
+        <div class="logo-mark">K</div>
+        <div class="logo-name">KAYON STUDIO</div>
+      </div>
+      <div id="headerBadge" class="status-pill">合約簽署中</div>
+    </div>
+  </header>
+
+  <div class="progress-wrap">
+    <div class="steps">
+      <div class="step active"><div class="step-dot">1</div><div class="step-line"></div></div>
+      <div class="step"><div class="step-dot">2</div><div class="step-line"></div></div>
+      <div class="step"><div class="step-dot">3</div></div>
+    </div>
+  </div>
+
+  <main id="mainContent" class="content">
+    <div id="page1" class="page active">
+      <div class="info-card">
+        <div class="info-row"><span class="info-key">合約編號</span><span id="contractNo" class="info-val" style="color:var(--gold)">KY-20260511-001</span></div>
+      </div>
+      <div class="field">
+        <label class="field-label">學員姓名 <span class="req">*</span></label>
+        <input type="text" id="studentName" placeholder="請輸入您的真實姓名">
+      </div>
+      <div class="field">
+        <label class="field-label">聯絡電話 <span class="req">*</span></label>
+        <input type="tel" id="studentPhone" placeholder="請輸入您的聯絡電話">
+      </div>
+      <div class="field">
+        <label class="field-label">電子信箱 <span class="req">*</span></label>
+        <input type="email" id="studentEmail" placeholder="請輸入您的電子信箱">
+      </div>
+      <div class="field">
+        <label class="field-label">課程類型 <span class="req">*</span></label>
+        <select id="courseType">
+          <option value="創作啟航計畫 A｜4堂｜$4,200">創作啟航計畫 A｜4堂｜$4,200</option>
+          <option value="創作啟航計畫 B｜8+1堂｜$8,000">創作啟航計畫 B｜8+1堂｜$8,000</option>
+        </select>
+      </div>
+      
+      <div class="field" style="margin-top:20px">
+        <label class="field-label">學員簽名 <span class="req">*</span></label>
+        <div class="canvas-wrap" id="wrap0">
+          <canvas id="canvas0"></canvas>
+          <div class="canvas-hint" id="hint0">在此簽名</div>
+        </div>
+        <button style="background:transparent;border:none;color:var(--text3);font-size:11px;margin-top:8px;cursor:pointer" onclick="clearCanvas()">清除重簽</button>
+      </div>
+
+      <button class="btn-primary" onclick="submitContract()">確認並提交簽署</button>
+    </div>
+
+    <div id="successScreen" class="page" style="display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding-top:40px">
+      <div style="font-size:48px;margin-bottom:20px;color:var(--gold)">✓</div>
+      <h3>簽署成功！</h3>
+      <p style="color:var(--text2);margin-top:10px">您的合約已成功提交，我們將會寄送副本至您的信箱。</p>
+      <div class="info-card" style="margin-top:30px;width:100%">
+        <div class="info-row"><span class="info-key">學員姓名</span><span id="sName" class="info-val"></span></div>
+        <div class="info-row"><span class="info-key">課程名稱</span><span id="sCourse" class="info-val"></span></div>
+        <div class="info-row"><span class="info-key">簽署時間</span><span id="sTime" class="info-val"></span></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+/* ─── 設定區 ─── */
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzpMIhdFGQZ23pBroz01mR7F-rJb3LguJsULP9Z3NDw0sWDVcqA_GalRsgMlhz1--Xs/exec';
+
+/* ─── 簽名板邏輯 ─── */
+const canvas = document.getElementById('canvas0');
+const ctx = canvas.getContext('2d');
+let drawing = false;
+
+function resizeCanvas() {
+  const rect = canvas.parentNode.getBoundingClientRect();
+  canvas.width = rect.width;
+  canvas.height = rect.height;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+canvas.addEventListener('mousedown', startDraw);
+canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mouseup', stopDraw);
+canvas.addEventListener('touchstart', e => { e.preventDefault(); startDraw(e.touches[0]); });
+canvas.addEventListener('touchmove', e => { e.preventDefault(); draw(e.touches[0]); });
+canvas.addEventListener('touchend', stopDraw);
+
+function startDraw(e) {
+  drawing = true;
+  document.getElementById('hint0').style.display = 'none';
+  ctx.beginPath();
+  const rect = canvas.getBoundingClientRect();
+  ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+}
+function draw(e) {
+  if (!drawing) return;
+  const rect = canvas.getBoundingClientRect();
+  ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+  ctx.strokeStyle = '#C9A84C';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+}
+function stopDraw() { drawing = false; }
+function clearCanvas() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  document.getElementById('hint0').style.display = 'block';
+}
+
+/* ─── 核心提交邏輯 ─── */
+async function submitContract() {
+  const btn = document.querySelector('.btn-primary');
+  const originalText = btn.innerHTML;
+  
+  try {
+    const name = document.getElementById('studentName').value;
+    const phone = document.getElementById('studentPhone').value;
+    const email = document.getElementById('studentEmail').value;
+    const course = document.getElementById('courseType').value;
+    const no = document.getElementById('contractNo').textContent;
+    
+    if (!name || !phone || !email) {
+      alert('請填寫完整的學員資料。');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '簽署提交中...';
+
+    const payload = {
+      action: 'contract',
+      contractNo: no,
+      name: name,
+      phone: phone,
+      email: email,
+      course: course,
+      studentSignature: canvas.toDataURL(),
+      timestamp: new Date().toLocaleString('zh-TW')
+    };
+
+    const response = await fetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      document.getElementById('sName').textContent = name;
+      document.getElementById('sCourse').textContent = course;
+      document.getElementById('sTime').textContent = payload.timestamp;
+      
+      document.getElementById('page1').style.display = 'none';
+      document.getElementById('successScreen').style.display = 'flex';
+      document.getElementById('headerBadge').textContent = '簽署完成 ✓';
+    } else {
+      throw new Error(result.error || '提交失敗');
+    }
+
+  } catch (err) {
+    console.error('Submit failed:', err);
+    alert('提交失敗：' + err.message);
+    btn.disabled = false;
+    btn.innerHTML = originalText;
+  }
+}
+</script>
+</body>
+</html>
