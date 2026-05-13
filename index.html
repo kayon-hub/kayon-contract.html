@@ -1,300 +1,139 @@
-<!-- 放進 <main id="mainContent" class="content"> 裡面最上方 -->
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KAYON STUDIO</title>
 
-<main id="mainContent" class="content">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  <!-- HERO SECTION -->
-  <div class="hero-wrap">
+    html,
+    body {
+      width: 100%;
+      overflow-x: hidden;
+      font-family: Arial, sans-serif;
+      background: #000;
+      color: white;
+    }
 
-    <img src="/hero2.webp"
-         alt="KAYON STUDIO HERO"
-         class="hero-image">
+    .hero {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
 
-    <div class="hero-overlay">
+      /* 新圖片 */
+      background: url('./hero2.webp') center center / cover no-repeat;
 
-      <a href="https://www.pro360.com.tw/shop/item/41205?return_url=%2Fdashboard%2Fshop%2Fproduct%2Fedit%2F652978%2F876%2F41205%3Fback_url%3Dhttps%253A%252F%252Fwww.pro360.com.tw%252Fdashboard%252Fshop%253Fservice_id%253D652978"
-         target="_blank"
-         class="cta-btn">
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
-         立即預約課程
+      text-align: center;
+      padding: 40px;
+    }
 
+    /* 黑色遮罩 */
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 900px;
+    }
+
+    .hero h1 {
+      font-size: clamp(42px, 7vw, 96px);
+      letter-spacing: 4px;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    .hero p {
+      font-size: clamp(16px, 2vw, 22px);
+      line-height: 1.8;
+      opacity: 0.9;
+      margin-bottom: 40px;
+    }
+
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 16px 42px;
+
+      border-radius: 999px;
+      text-decoration: none;
+
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 1px;
+
+      background: white;
+      color: black;
+
+      transition: 0.3s ease;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-2px);
+      opacity: 0.9;
+    }
+
+    /* 手機版 */
+    @media (max-width: 768px) {
+      .hero {
+        background-position: center center;
+        padding: 24px;
+      }
+
+      .hero h1 {
+        margin-bottom: 16px;
+      }
+
+      .hero p {
+        margin-bottom: 32px;
+      }
+
+      .cta-button {
+        width: 100%;
+        max-width: 320px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <section class="hero">
+
+    <div class="hero-content">
+      <h1>KAYON STUDIO</h1>
+
+      <p>
+        SOUND NARRATIVE ｜ MUSIC PRODUCTION
+      </p>
+
+      <a
+        class="cta-button"
+        href="https://www.pro360.com.tw/shop/item/41205?return_url=%2Fdashboard%2Fshop"
+        target="_blank"
+      >
+        BOOK NOW
       </a>
-
     </div>
 
-  </div>
+  </section>
 
-  <!-- PAGE 1 -->
-  <div id="page1" class="page active">
-
-    <div class="info-card">
-      <div class="info-row">
-        <span class="info-key">合約編號</span>
-
-        <span id="contractNo"
-              class="info-val"
-              style="color:var(--gold)">
-
-              KY-20260511-001
-
-        </span>
-      </div>
-    </div>
-
-    <!-- 學員姓名 -->
-    <div class="field">
-
-      <label class="field-label">
-        學員姓名
-        <span class="req">*</span>
-      </label>
-
-      <input type="text"
-             id="studentName"
-             placeholder="請輸入您的真實姓名">
-
-    </div>
-
-    <!-- 電話 -->
-    <div class="field">
-
-      <label class="field-label">
-        聯絡電話
-        <span class="req">*</span>
-      </label>
-
-      <input type="tel"
-             id="studentPhone"
-             placeholder="請輸入您的聯絡電話">
-
-    </div>
-
-    <!-- Email -->
-    <div class="field">
-
-      <label class="field-label">
-        電子信箱
-        <span class="req">*</span>
-      </label>
-
-      <input type="email"
-             id="studentEmail"
-             placeholder="請輸入您的電子信箱">
-
-    </div>
-
-    <!-- 課程 -->
-    <div class="field">
-
-      <label class="field-label">
-        課程類型
-        <span class="req">*</span>
-      </label>
-
-      <select id="courseType">
-
-        <option value="聲音啟航計劃A 四堂課$4,200">
-          聲音啟航計劃A 四堂課$4,200
-        </option>
-
-        <option value="聲音啟航計劃B 8+1堂課$8,000">
-          聲音啟航計劃B 8+1堂課$8,000
-        </option>
-
-        <option value="創作啟航計劃A 四堂課$4,200">
-          創作啟航計劃A 四堂課$4,200
-        </option>
-
-        <option value="創作啟航計劃B 8+1堂課$8,000">
-          創作啟航計劃B 8+1堂課$8,000
-        </option>
-
-      </select>
-
-    </div>
-
-    <!-- 簽名 -->
-    <div class="field" style="margin-top:20px">
-
-      <label class="field-label">
-        學員簽名
-        <span class="req">*</span>
-      </label>
-
-      <div class="canvas-wrap" id="wrap0">
-
-        <canvas id="canvas0"></canvas>
-
-        <div class="canvas-hint" id="hint0">
-          在此簽名
-        </div>
-
-      </div>
-
-      <button
-        style="background:transparent;border:none;color:var(--text3);font-size:11px;margin-top:8px;cursor:pointer"
-        onclick="clearCanvas()">
-
-        清除重簽
-
-      </button>
-
-    </div>
-
-    <!-- 提交 -->
-    <button class="btn-primary"
-            onclick="submitContract()">
-
-            確認並提交簽署
-
-    </button>
-
-  </div>
-
-  <!-- SUCCESS -->
-  <div id="successScreen"
-       class="page"
-       style="display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding-top:40px">
-
-    <div style="font-size:48px;margin-bottom:20px;color:var(--gold)">
-      ✓
-    </div>
-
-    <h3>簽署成功！</h3>
-
-    <p style="color:var(--text2);margin-top:10px">
-      您的合約已成功提交，我們將會寄送副本至您的信箱。
-    </p>
-
-    <div class="info-card"
-         style="margin-top:30px;width:100%">
-
-      <div class="info-row">
-        <span class="info-key">學員姓名</span>
-        <span id="sName" class="info-val"></span>
-      </div>
-
-      <div class="info-row">
-        <span class="info-key">課程名稱</span>
-        <span id="sCourse" class="info-val"></span>
-      </div>
-
-      <div class="info-row">
-        <span class="info-key">簽署時間</span>
-        <span id="sTime" class="info-val"></span>
-      </div>
-
-    </div>
-
-  </div>
-
-</main>
-
-
-/* ─────────────────────────────
-   HERO SECTION
-───────────────────────────── */
-
-.hero-wrap{
-  position:relative;
-
-  margin-bottom:32px;
-
-  overflow:hidden;
-
-  border-radius:26px;
-
-  border:
-    1px solid rgba(201,168,76,0.16);
-
-  box-shadow:
-    0 14px 44px rgba(0,0,0,0.42),
-    0 0 28px rgba(201,168,76,0.08);
-}
-
-.hero-image{
-  width:100%;
-
-  display:block;
-}
-
-/* ─────────────────────────────
-   HERO OVERLAY
-───────────────────────────── */
-
-.hero-overlay{
-  position:absolute;
-
-  inset:0;
-
-  display:flex;
-
-  align-items:flex-end;
-
-  justify-content:center;
-
-  padding:42px 20px;
-
-  background:
-    linear-gradient(
-      to top,
-      rgba(0,0,0,0.72) 0%,
-      rgba(0,0,0,0.18) 36%,
-      rgba(0,0,0,0) 60%
-    );
-}
-
-/* ─────────────────────────────
-   CTA BUTTON
-───────────────────────────── */
-
-.cta-btn{
-  display:inline-flex;
-
-  align-items:center;
-
-  justify-content:center;
-
-  padding:16px 38px;
-
-  border-radius:999px;
-
-  background:
-    linear-gradient(
-      145deg,
-      #E8C96A,
-      #C9A84C
-    );
-
-  color:#000;
-
-  font-size:15px;
-
-  font-weight:700;
-
-  letter-spacing:1.2px;
-
-  text-decoration:none;
-
-  transition:all 0.25s ease;
-
-  border:
-    1px solid rgba(255,255,255,0.18);
-
-  box-shadow:
-    0 10px 30px rgba(201,168,76,0.30),
-    0 0 18px rgba(201,168,76,0.16);
-
-  backdrop-filter:blur(10px);
-}
-
-.cta-btn:hover{
-  transform:translateY(-2px);
-
-  box-shadow:
-    0 16px 38px rgba(201,168,76,0.38),
-    0 0 24px rgba(201,168,76,0.24);
-}
-
-.cta-btn:active{
-  transform:translateY(0);
-}
+</body>
+</html>
