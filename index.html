@@ -1,11 +1,14 @@
 <style>
-/* ─── KAYON STUDIO PREMIUM BLACK GOLD UI ─── */
+
+/* ─────────────────────────────
+   KAYON STUDIO ｜ PREMIUM BLACK GOLD UI
+───────────────────────────── */
 
 *{
   margin:0;
   padding:0;
   box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent
+  -webkit-tap-highlight-color:transparent;
 }
 
 :root{
@@ -33,7 +36,7 @@
 }
 
 html{
-  scroll-behavior:smooth
+  scroll-behavior:smooth;
 }
 
 body{
@@ -45,22 +48,34 @@ body{
     );
 
   color:var(--text);
+
   font-family:'DM Sans',sans-serif;
+
   min-height:100vh;
+
   font-size:14px;
+
   line-height:1.65;
+
   -webkit-font-smoothing:antialiased;
+
+  padding:24px 12px;
 }
 
-/* ─── APP CONTAINER ─── */
+/* ─────────────────────────────
+   APP
+───────────────────────────── */
 
 .app{
   max-width:430px;
-  margin:24px auto;
+
+  margin:0 auto;
+
   min-height:calc(100vh - 48px);
 
   display:flex;
   flex-direction:column;
+
   position:relative;
 
   background:
@@ -70,9 +85,11 @@ body{
       rgba(10,10,10,0.98)
     );
 
-  border:1px solid rgba(201,168,76,0.22);
+  border:
+    1px solid rgba(201,168,76,0.22);
 
   border-radius:24px;
+
   overflow:hidden;
 
   box-shadow:
@@ -81,10 +98,15 @@ body{
     0 0 30px rgba(201,168,76,0.05);
 }
 
-/* ─── HEADER ─── */
+/* ─────────────────────────────
+   HEADER
+───────────────────────────── */
 
 .header{
   padding:18px 20px 14px;
+
+  border-bottom:
+    1px solid rgba(201,168,76,0.12);
 
   background:
     rgba(10,10,10,0.92);
@@ -95,9 +117,6 @@ body{
   position:sticky;
   top:0;
   z-index:200;
-
-  border-bottom:
-    1px solid rgba(201,168,76,0.12);
 
   box-shadow:
     0 1px 0 rgba(201,168,76,0.05);
@@ -134,6 +153,7 @@ body{
 
   font-size:11px;
   font-weight:700;
+
   color:#000;
 
   letter-spacing:0.5px;
@@ -147,11 +167,15 @@ body{
 .logo-name{
   font-size:13px;
   font-weight:500;
+
   color:var(--text);
+
   letter-spacing:0.8px;
 }
 
-/* ─── STATUS BADGE ─── */
+/* ─────────────────────────────
+   STATUS
+───────────────────────────── */
 
 .status-pill{
   background:
@@ -178,7 +202,9 @@ body{
     inset 0 1px 0 rgba(255,255,255,0.02);
 }
 
-/* ─── PROGRESS ─── */
+/* ─────────────────────────────
+   PROGRESS
+───────────────────────────── */
 
 .progress-wrap{
   padding:18px 20px 8px;
@@ -229,11 +255,13 @@ body{
   flex:1;
   height:1px;
   background:var(--border);
+
   transition:var(--transition);
 }
 
 .step.active .step-dot{
   border-color:var(--gold);
+
   color:var(--gold);
 
   background:
@@ -254,6 +282,7 @@ body{
     );
 
   color:#000;
+
   font-weight:700;
 }
 
@@ -262,17 +291,23 @@ body{
   background:var(--gold-dim);
 }
 
-/* ─── CONTENT ─── */
+/* ─────────────────────────────
+   CONTENT
+───────────────────────────── */
 
 .content{
   flex:1;
+
   padding:22px;
+
   overflow-y:auto;
+
   -webkit-overflow-scrolling:touch;
 }
 
 .page{
   display:none;
+
   animation:fadeIn 0.3s ease;
 }
 
@@ -283,15 +318,17 @@ body{
 @keyframes fadeIn{
   from{
     opacity:0;
-    transform:translateY(6px)
+    transform:translateY(6px);
   }
   to{
     opacity:1;
-    transform:translateY(0)
+    transform:translateY(0);
   }
 }
 
-/* ─── INFO CARD ─── */
+/* ─────────────────────────────
+   INFO CARD
+───────────────────────────── */
 
 .info-card{
   background:
@@ -311,6 +348,7 @@ body{
   margin-bottom:18px;
 
   position:relative;
+
   overflow:hidden;
 
   box-shadow:
@@ -322,6 +360,7 @@ body{
   content:'';
 
   position:absolute;
+
   top:0;
   left:0;
   right:0;
@@ -340,6 +379,7 @@ body{
   content:'';
 
   position:absolute;
+
   inset:0;
 
   border:
@@ -352,7 +392,9 @@ body{
 
 .info-row{
   display:flex;
+
   justify-content:space-between;
+
   align-items:center;
 
   padding:10px 0;
@@ -373,10 +415,13 @@ body{
 .info-val{
   font-size:12px;
   color:var(--text);
+
   text-align:right;
 }
 
-/* ─── FORM ─── */
+/* ─────────────────────────────
+   FORM
+───────────────────────────── */
 
 .field{
   margin-bottom:16px;
@@ -384,6 +429,7 @@ body{
 
 .field-label{
   font-size:11px;
+
   color:var(--text2);
 
   letter-spacing:0.7px;
@@ -399,6 +445,7 @@ body{
 
 .req{
   color:var(--gold);
+
   font-size:10px;
 }
 
@@ -439,7 +486,9 @@ body{
     0 0 0 3px rgba(201,168,76,0.06);
 }
 
-/* ─── SIGNATURE ─── */
+/* ─────────────────────────────
+   SIGNATURE
+───────────────────────────── */
 
 .canvas-wrap{
   background:
@@ -463,6 +512,7 @@ body{
   cursor:crosshair;
 
   position:relative;
+
   overflow:hidden;
 
   touch-action:none;
@@ -470,20 +520,28 @@ body{
 
 .canvas-wrap canvas{
   position:absolute;
+
   inset:0;
+
   width:100%;
   height:100%;
+
   touch-action:none;
 }
 
 .canvas-hint{
   font-size:12px;
+
   color:var(--text3);
+
   pointer-events:none;
+
   user-select:none;
 }
 
-/* ─── BUTTON ─── */
+/* ─────────────────────────────
+   BUTTON
+───────────────────────────── */
 
 .btn-primary{
   width:100%;
@@ -504,6 +562,7 @@ body{
   border-radius:14px;
 
   font-weight:700;
+
   font-size:14px;
 
   letter-spacing:0.5px;
@@ -530,7 +589,9 @@ body{
   cursor:not-allowed;
 }
 
-/* ─── SUCCESS ─── */
+/* ─────────────────────────────
+   SUCCESS
+───────────────────────────── */
 
 #successScreen h3{
   font-size:24px;
@@ -540,4 +601,5 @@ body{
 #successScreen p{
   line-height:1.7;
 }
+
 </style>
