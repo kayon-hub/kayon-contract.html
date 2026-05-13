@@ -1,13 +1,16 @@
+<!-- 放進 <main id="mainContent" class="content"> 裡面最上方 -->
+
 <main id="mainContent" class="content">
 
   <!-- HERO SECTION -->
   <div class="hero-wrap">
 
-    <img src="/hero.webp"
+    <img src="/hero2.webp"
          alt="KAYON STUDIO HERO"
          class="hero-image">
 
-    <div class="cta-wrap">
+    <div class="hero-overlay">
+
       <a href="https://www.pro360.com.tw/shop/item/41205?return_url=%2Fdashboard%2Fshop%2Fproduct%2Fedit%2F652978%2F876%2F41205%3Fback_url%3Dhttps%253A%252F%252Fwww.pro360.com.tw%252Fdashboard%252Fshop%253Fservice_id%253D652978"
          target="_blank"
          class="cta-btn">
@@ -15,24 +18,31 @@
          立即預約課程
 
       </a>
+
     </div>
 
   </div>
 
+  <!-- PAGE 1 -->
   <div id="page1" class="page active">
 
     <div class="info-card">
       <div class="info-row">
         <span class="info-key">合約編號</span>
+
         <span id="contractNo"
               class="info-val"
               style="color:var(--gold)">
+
               KY-20260511-001
+
         </span>
       </div>
     </div>
 
+    <!-- 學員姓名 -->
     <div class="field">
+
       <label class="field-label">
         學員姓名
         <span class="req">*</span>
@@ -41,9 +51,12 @@
       <input type="text"
              id="studentName"
              placeholder="請輸入您的真實姓名">
+
     </div>
 
+    <!-- 電話 -->
     <div class="field">
+
       <label class="field-label">
         聯絡電話
         <span class="req">*</span>
@@ -52,9 +65,12 @@
       <input type="tel"
              id="studentPhone"
              placeholder="請輸入您的聯絡電話">
+
     </div>
 
+    <!-- Email -->
     <div class="field">
+
       <label class="field-label">
         電子信箱
         <span class="req">*</span>
@@ -63,9 +79,12 @@
       <input type="email"
              id="studentEmail"
              placeholder="請輸入您的電子信箱">
+
     </div>
 
+    <!-- 課程 -->
     <div class="field">
+
       <label class="field-label">
         課程類型
         <span class="req">*</span>
@@ -90,8 +109,10 @@
         </option>
 
       </select>
+
     </div>
 
+    <!-- 簽名 -->
     <div class="field" style="margin-top:20px">
 
       <label class="field-label">
@@ -119,6 +140,7 @@
 
     </div>
 
+    <!-- 提交 -->
     <button class="btn-primary"
             onclick="submitContract()">
 
@@ -128,6 +150,7 @@
 
   </div>
 
+  <!-- SUCCESS -->
   <div id="successScreen"
        class="page"
        style="display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding-top:40px">
@@ -165,3 +188,113 @@
   </div>
 
 </main>
+
+
+/* ─────────────────────────────
+   HERO SECTION
+───────────────────────────── */
+
+.hero-wrap{
+  position:relative;
+
+  margin-bottom:32px;
+
+  overflow:hidden;
+
+  border-radius:26px;
+
+  border:
+    1px solid rgba(201,168,76,0.16);
+
+  box-shadow:
+    0 14px 44px rgba(0,0,0,0.42),
+    0 0 28px rgba(201,168,76,0.08);
+}
+
+.hero-image{
+  width:100%;
+
+  display:block;
+}
+
+/* ─────────────────────────────
+   HERO OVERLAY
+───────────────────────────── */
+
+.hero-overlay{
+  position:absolute;
+
+  inset:0;
+
+  display:flex;
+
+  align-items:flex-end;
+
+  justify-content:center;
+
+  padding:42px 20px;
+
+  background:
+    linear-gradient(
+      to top,
+      rgba(0,0,0,0.72) 0%,
+      rgba(0,0,0,0.18) 36%,
+      rgba(0,0,0,0) 60%
+    );
+}
+
+/* ─────────────────────────────
+   CTA BUTTON
+───────────────────────────── */
+
+.cta-btn{
+  display:inline-flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  padding:16px 38px;
+
+  border-radius:999px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #E8C96A,
+      #C9A84C
+    );
+
+  color:#000;
+
+  font-size:15px;
+
+  font-weight:700;
+
+  letter-spacing:1.2px;
+
+  text-decoration:none;
+
+  transition:all 0.25s ease;
+
+  border:
+    1px solid rgba(255,255,255,0.18);
+
+  box-shadow:
+    0 10px 30px rgba(201,168,76,0.30),
+    0 0 18px rgba(201,168,76,0.16);
+
+  backdrop-filter:blur(10px);
+}
+
+.cta-btn:hover{
+  transform:translateY(-2px);
+
+  box-shadow:
+    0 16px 38px rgba(201,168,76,0.38),
+    0 0 24px rgba(201,168,76,0.24);
+}
+
+.cta-btn:active{
+  transform:translateY(0);
+}
