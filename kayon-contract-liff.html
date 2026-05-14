@@ -572,6 +572,7 @@ function calcAge(){
   document.getElementById('minorBanner').style.display=minor?'block':'none';
   document.getElementById('gSigBlock').style.display=minor?'block':'none';
   sync();
+  updateGuardianTab();
 }
 
 function sync(){
@@ -587,6 +588,11 @@ function updateP360(){
 
 /* ════════ NAVIGATION ════════ */
 function go(s){
+  // ★ 成年人嘗試進入法代頁面 → 封鎖並提示
+  if(s==='guardian' && !isMinor()){
+    showAlert('您已成年，無需填寫法定代理人同意書');
+    return;
+  }
   const idx=sections.indexOf(s);
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+s).classList.add('active');
@@ -595,6 +601,23 @@ function go(s){
   if(s==='sign') setTimeout(initCvs,50);
   renderFoot(); sync();
   document.getElementById('mainContent').scrollTop=0;
+  updateGuardianTab();
+}
+
+// ★ 法代 tab 視覺狀態同步
+function updateGuardianTab(){
+  const tabs=document.querySelectorAll('.tab');
+  const guardianTab=tabs[2];
+  if(!guardianTab) return;
+  if(!isMinor()){
+    guardianTab.style.opacity='0.35';
+    guardianTab.style.cursor='not-allowed';
+    guardianTab.title='已成年，無需填寫';
+  } else {
+    guardianTab.style.opacity='1';
+    guardianTab.style.cursor='pointer';
+    guardianTab.title='';
+  }
 }
 
 function renderFoot(){
@@ -751,10 +774,23 @@ function fullValidate(){
 /* ════════ STEP NAV ════════ */
 function next(){
   if(!validateStep(sections[cur])) return;
-  if(cur<sections.length-1) go(sections[cur+1]);
-  else submit();
+  if(cur < sections.length-1){
+    let nextS = sections[cur+1];
+    // ★ 成年人自動跳過法代頁面
+    if(nextS === 'guardian' && !isMinor()) nextS = 'sign';
+    go(nextS);
+  } else {
+    submit();
+  }
 }
-function prev(){ if(cur>0) go(sections[cur-1]); }
+function prev(){
+  if(cur > 0){
+    let prevS = sections[cur-1];
+    // ★ 成年人從 sign 往回也跳過法代
+    if(prevS === 'guardian' && !isMinor()) prevS = 'contract';
+    go(prevS);
+  }
+}
 
 /* ════════ SIGNATURE ════════ */
 function switchSigMode(mode,idx){

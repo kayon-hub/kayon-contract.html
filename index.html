@@ -480,6 +480,7 @@ function calcAge(){
   document.getElementById('minorNotice').style.display = minor?'block':'none';
   document.getElementById('guardianSigBlock').style.display = minor?'block':'none';
   syncInfo();
+  updateGuardianTab();
 }
 
 function syncInfo(){
@@ -501,6 +502,11 @@ function updatePro360Link(){
 
 /* ════════ NAVIGATION ════════ */
 function switchSection(s){
+  // ★ 成年人嘗試進入法代頁面 → 封鎖並提示
+  if(s==='guardian' && !isMinor()){
+    showAlert('您已成年，無需填寫法定代理人同意書');
+    return;
+  }
   const idx = sections.indexOf(s);
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+s).classList.add('active');
@@ -509,6 +515,23 @@ function switchSection(s){
   if(s==='sign') setTimeout(initCanvases,50);
   renderFooter(); syncInfo();
   document.getElementById('mainContent').scrollTop = 0;
+  updateGuardianTab();
+}
+
+// ★ 法代 tab 視覺狀態同步（成年人顯示鎖定樣式）
+function updateGuardianTab(){
+  const tabs = document.querySelectorAll('.tab');
+  const guardianTab = tabs[2]; // index 2 = 法代同意書
+  if(!guardianTab) return;
+  if(!isMinor()){
+    guardianTab.style.opacity = '0.35';
+    guardianTab.style.cursor  = 'not-allowed';
+    guardianTab.title = '已成年，無需填寫';
+  } else {
+    guardianTab.style.opacity = '1';
+    guardianTab.style.cursor  = 'pointer';
+    guardianTab.title = '';
+  }
 }
 
 function renderFooter(){
@@ -648,10 +671,23 @@ function fullValidate(){
 /* ════════ STEP NAV ════════ */
 function nextStep(){
   if(!validateStep(sections[cur])) return;
-  if(cur<sections.length-1) switchSection(sections[cur+1]);
-  else submitContract();
+  if(cur < sections.length-1){
+    let next = sections[cur+1];
+    // ★ 成年人自動跳過法代頁面
+    if(next === 'guardian' && !isMinor()) next = 'sign';
+    switchSection(next);
+  } else {
+    submitContract();
+  }
 }
-function prevStep(){ if(cur>0) switchSection(sections[cur-1]); }
+function prevStep(){
+  if(cur > 0){
+    let prev = sections[cur-1];
+    // ★ 成年人從 sign 往回也跳過法代
+    if(prev === 'guardian' && !isMinor()) prev = 'contract';
+    switchSection(prev);
+  }
+}
 
 /* ════════ CHECKS ════════ */
 function toggleCheck(el, errId){
