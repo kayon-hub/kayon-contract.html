@@ -31,105 +31,21 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-end;
-      background: url('./plan.webp') center top / cover no-repeat;
-      padding-bottom: 10vh;
+      justify-content: center;
+      background: url('./plan.webp') center center / cover no-repeat;
     }
 
-    /* 如果是手機版，背景圖可能需要調整 */
+    /* 手機版背景圖調整 */
     @media (max-width: 768px) {
       .container {
         background-position: center center;
-        padding-bottom: 15vh;
       }
     }
-
-    .cta-wrapper {
-      position: relative;
-      z-index: 10;
-      text-align: center;
-      width: 100%;
-      max-width: 600px;
-      padding: 0 20px;
-    }
-
-    .cta-button {
-      display: inline-block;
-      text-decoration: none;
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
-
-    .cta-button:hover {
-      transform: scale(1.05);
-      filter: brightness(1.2);
-    }
-
-    /* 模擬圖片中的按鈕樣式 */
-    .btn-visual {
-      border: 2px solid #D4AF37;
-      background: rgba(0, 0, 0, 0.6);
-      padding: 15px 40px;
-      border-radius: 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: #F0EDE6;
-    }
-
-    .btn-main-text {
-      font-size: 24px;
-      font-weight: bold;
-      letter-spacing: 2px;
-      margin-bottom: 5px;
-      display: flex;
-      align-items: center;
-    }
-
-    .btn-main-text::before {
-      content: '▶';
-      font-size: 18px;
-      margin-right: 10px;
-      color: #D4AF37;
-    }
-
-    .btn-sub-text {
-      font-size: 14px;
-      letter-spacing: 4px;
-      opacity: 0.8;
-    }
-
-    .footer-info {
-      margin-top: 30px;
-      font-size: 12px;
-      opacity: 0.6;
-      letter-spacing: 1px;
-    }
-
-    /* 為了讓按鈕精確覆蓋在 plan.webp 的 CTA 位置上，我們可以使用透明層或是直接重建按鈕 */
-    /* 這裡我們選擇在底部建立一個可點擊的區域 */
   </style>
 </head>
 <body>
 
   <div class="container">
-    <div class="cta-wrapper">
-      <a 
-        href="https://www.pro360.com.tw/shop/item/41524?return_url=%2Fdashboard%2Fshop%2Fproduct%2Fedit%2F652978%2F1011%2F41524%3Fback_url%3Dhttps%253A%252F%252Fwww.pro360.com.tw%252Fdashboard%252Fshop%253Fservice_id%253D652978" 
-        class="cta-button"
-        target="_blank"
-      >
-        <div class="btn-visual">
-          <div class="btn-main-text">DEFINE YOUR SOUND</div>
-          <div class="btn-sub-text">你的聲音 值得被世界記住</div>
-        </div>
-      </a>
-      
-      <div class="footer-info">
-        © 2026 KARBØN X GAIA ENTERTAINMENT · KAYON STUDIO.
-      </div>
-    </div>
   </div>
 
 </body>
