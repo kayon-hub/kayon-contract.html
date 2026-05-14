@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KAYON STUDIO</title>
-
+  <title>KAYON STUDIO - DEFINE YOUR SOUND</title>
   <style>
     * {
       margin: 0;
@@ -15,125 +14,123 @@
     html,
     body {
       width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
       overflow-x: hidden;
-      font-family: Arial, sans-serif;
+      font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
       background: #000;
       color: white;
     }
 
-    .hero {
+    .container {
       position: relative;
       width: 100%;
+      max-width: 100%;
       min-height: 100vh;
-
-      /* 新圖片 */
-      background: url('./hero2.webp') center center / cover no-repeat;
-
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-
-      text-align: center;
-      padding: 40px;
+      justify-content: flex-end;
+      background: url('./plan.webp') center top / cover no-repeat;
+      padding-bottom: 10vh;
     }
 
-    /* 黑色遮罩 */
-    .hero::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.45);
+    /* 如果是手機版，背景圖可能需要調整 */
+    @media (max-width: 768px) {
+      .container {
+        background-position: center center;
+        padding-bottom: 15vh;
+      }
     }
 
-    .hero-content {
+    .cta-wrapper {
       position: relative;
-      z-index: 2;
-      max-width: 900px;
-    }
-
-    .hero h1 {
-      font-size: clamp(42px, 7vw, 96px);
-      letter-spacing: 4px;
-      margin-bottom: 20px;
-      font-weight: 700;
-    }
-
-    .hero p {
-      font-size: clamp(16px, 2vw, 22px);
-      line-height: 1.8;
-      opacity: 0.9;
-      margin-bottom: 40px;
+      z-index: 10;
+      text-align: center;
+      width: 100%;
+      max-width: 600px;
+      padding: 0 20px;
     }
 
     .cta-button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-
-      padding: 16px 42px;
-
-      border-radius: 999px;
+      display: inline-block;
       text-decoration: none;
-
-      font-size: 16px;
-      font-weight: 700;
-      letter-spacing: 1px;
-
-      background: white;
-      color: black;
-
-      transition: 0.3s ease;
+      transition: all 0.3s ease;
+      cursor: pointer;
     }
 
     .cta-button:hover {
-      transform: translateY(-2px);
-      opacity: 0.9;
+      transform: scale(1.05);
+      filter: brightness(1.2);
     }
 
-    /* 手機版 */
-    @media (max-width: 768px) {
-      .hero {
-        background-position: center center;
-        padding: 24px;
-      }
-
-      .hero h1 {
-        margin-bottom: 16px;
-      }
-
-      .hero p {
-        margin-bottom: 32px;
-      }
-
-      .cta-button {
-        width: 100%;
-        max-width: 320px;
-      }
+    /* 模擬圖片中的按鈕樣式 */
+    .btn-visual {
+      border: 2px solid #D4AF37;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 15px 40px;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #F0EDE6;
     }
+
+    .btn-main-text {
+      font-size: 24px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+    }
+
+    .btn-main-text::before {
+      content: '▶';
+      font-size: 18px;
+      margin-right: 10px;
+      color: #D4AF37;
+    }
+
+    .btn-sub-text {
+      font-size: 14px;
+      letter-spacing: 4px;
+      opacity: 0.8;
+    }
+
+    .footer-info {
+      margin-top: 30px;
+      font-size: 12px;
+      opacity: 0.6;
+      letter-spacing: 1px;
+    }
+
+    /* 為了讓按鈕精確覆蓋在 plan.webp 的 CTA 位置上，我們可以使用透明層或是直接重建按鈕 */
+    /* 這裡我們選擇在底部建立一個可點擊的區域 */
   </style>
 </head>
-
 <body>
 
-  <section class="hero">
-
-    <div class="hero-content">
-      <h1>KAYON STUDIO</h1>
-
-      <p>
-        SOUND NARRATIVE ｜ MUSIC PRODUCTION
-      </p>
-
-      <a
+  <div class="container">
+    <div class="cta-wrapper">
+      <a 
+        href="https://www.pro360.com.tw/shop/item/41524?return_url=%2Fdashboard%2Fshop%2Fproduct%2Fedit%2F652978%2F1011%2F41524%3Fback_url%3Dhttps%253A%252F%252Fwww.pro360.com.tw%252Fdashboard%252Fshop%253Fservice_id%253D652978" 
         class="cta-button"
-        href="https://www.pro360.com.tw/shop/item/41205?return_url=%2Fdashboard%2Fshop"
         target="_blank"
       >
-        BOOK NOW
+        <div class="btn-visual">
+          <div class="btn-main-text">DEFINE YOUR SOUND</div>
+          <div class="btn-sub-text">你的聲音 值得被世界記住</div>
+        </div>
       </a>
+      
+      <div class="footer-info">
+        © 2026 KARBØN X GAIA ENTERTAINMENT · KAYON STUDIO.
+      </div>
     </div>
-
-  </section>
+  </div>
 
 </body>
 </html>
