@@ -432,7 +432,7 @@ let pro360Url = 'https://www.pro360.com.tw/shop/item/41524';
 })();
 
 /* ════════ HELPERS ════════ */
-function isMinor(){ return parseInt(document.getElementById('studentAge').value)||99 < 18; }
+function isMinor(){ const age=parseInt(document.getElementById('studentAge').value); return !isNaN(age) && age < 18; }
 
 function canvasHasStroke(id){
   const cv = document.getElementById(id);
