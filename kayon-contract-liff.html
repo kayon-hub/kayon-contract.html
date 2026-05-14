@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>KAYON STUDIO｜課程合約簽署</title>
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+--gold:#C9A84C;--gold-light:#E8C96A;--gold-dim:#8B6E2E;
+--bg:#0A0A0A;--bg2:#111111;--bg3:#181818;--bg4:#222222;
+--border:#252525;--border-gold:rgba(201,168,76,0.22);
+--text:#F0EDE6;--text2:#888;--text3:#444;
+--red:#c0392b;--red-bg:rgba(192,57,43,0.08);--red-border:rgba(192,57,43,0.3);
+--green:#4CAF50;--line-green:#00B900;
+--radius:14px;--radius-sm:9px;
+--transition:0.25s cubic-bezier(0.4,0,0.2,1);
+--safe-top:env(safe-area-inset-top,0px);
+--safe-bottom:env(safe-area-inset-bottom,0px);
+}
+html,body{height:100%;overscroll-behavior:none}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)}
+.app{max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+
+/* LIFF LOADING */
+#liffLoading{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.4s}
+#liffLoading.hide{opacity:0;pointer-events:none}
+.loading-logo{width:52px;height:52px;background:var(--gold);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#000;margin-bottom:20px}
+.loading-text{font-size:13px;color:var(--text2);letter-spacing:0.3px}
+.loading-bar{width:120px;height:2px;background:var(--border);border-radius:2px;margin-top:16px;overflow:hidden}
+.loading-fill{height:100%;background:var(--gold);border-radius:2px;animation:fill 1.5s ease-in-out infinite}
+@keyframes fill{0%{width:0;margin-left:0}50%{width:100%;margin-left:0}100%{width:0;margin-left:100%}}
+
+/* LIFF USER BAR */
+.liff-user-bar{background:rgba(0,185,0,0.08);border:1px solid rgba(0,185,0,0.2);border-radius:8px;padding:8px 12px;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.liff-avatar{width:32px;height:32px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(0,185,0,0.4)}
+.liff-avatar-placeholder{width:32px;height:32px;border-radius:50%;background:rgba(0,185,0,0.15);border:1.5px solid rgba(0,185,0,0.3);display:flex;align-items:center;justify-content:center;font-size:14px}
+.liff-name{font-size:12px;font-weight:500;color:var(--text)}
+.liff-label{font-size:10px;color:var(--line-green);letter-spacing:0.5px}
+.liff-verified{margin-left:auto;font-size:10px;color:var(--line-green);background:rgba(0,185,0,0.1);padding:3px 8px;border-radius:10px}
+
+/* HEADER */
+.header{padding:16px 20px 12px;border-bottom:1px solid var(--border);background:rgba(10,10,10,0.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);position:sticky;top:0;z-index:200}
+.header-row{display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-mark{width:30px;height:30px;background:var(--gold);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#000;flex-shrink:0}
+.logo-name{font-size:13px;font-weight:500;color:var(--text);letter-spacing:0.4px}
+.logo-sub{font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-top:1px}
+.status-pill{background:rgba(201,168,76,0.1);border:1px solid var(--border-gold);color:var(--gold);font-size:10px;padding:4px 10px;border-radius:20px;letter-spacing:0.6px;white-space:nowrap}
+
+/* PROGRESS */
+.progress-wrap{padding:14px 20px 4px;background:var(--bg)}
+.steps{display:flex;align-items:center}
+.step{display:flex;align-items:center;flex:1}
+.step:last-child{flex:0}
+.step-dot{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:var(--text3);background:var(--bg2);flex-shrink:0;transition:var(--transition)}
+.step-line{flex:1;height:1px;background:var(--border);transition:var(--transition)}
+.step.active .step-dot{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.08)}
+.step.done .step-dot{background:var(--gold);border-color:var(--gold);color:#000;font-weight:700}
+.step.done .step-line,.step.active .step-line{background:var(--gold-dim)}
+.step-labels{display:flex;margin-top:7px;padding-bottom:4px}
+.step-label{font-size:9px;color:var(--text3);flex:1;letter-spacing:0.3px;transition:var(--transition)}
+.step-label:last-child{text-align:right;flex:0}
+.step-label.active{color:var(--gold)}
+.step-label.done{color:var(--gold-dim)}
+
+/* TABS */
+.tabs-wrap{background:var(--bg);border-bottom:1px solid var(--border);padding:10px 20px 0;overflow-x:auto;scrollbar-width:none;display:flex;gap:6px;-webkit-overflow-scrolling:touch}
+.tabs-wrap::-webkit-scrollbar{display:none}
+.tab{padding:7px 14px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap;cursor:pointer;border:1px solid var(--border);color:var(--text2);background:transparent;transition:var(--transition);letter-spacing:0.4px;margin-bottom:10px}
+.tab.active{background:var(--gold);color:#000;border-color:var(--gold)}
+
+/* CONTENT */
+.content{flex:1;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.page{display:none;animation:fadeIn 0.3s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* COMPONENTS */
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.section-icon{width:30px;height:30px;border-radius:8px;background:rgba(201,168,76,0.08);border:1px solid var(--border-gold);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.section-num{font-size:9px;color:var(--gold);font-family:'DM Mono',monospace;letter-spacing:1.5px;text-transform:uppercase}
+.section-title{font-size:14px;font-weight:500;color:var(--text);letter-spacing:0.3px;margin-top:1px}
+.info-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:16px;position:relative;overflow:hidden}
+.info-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent)}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
+.info-row:last-child{border-bottom:none;padding-bottom:0}
+.info-row:first-child{padding-top:0}
+.info-key{font-size:12px;color:var(--text2)}
+.info-val{font-size:12px;color:var(--text)}
+.info-val.gold{color:var(--gold);font-weight:500}
+.info-val.mono{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.5px}
+.field{margin-bottom:14px}
+.field-label{font-size:11px;color:var(--text2);letter-spacing:0.6px;margin-bottom:7px;display:flex;align-items:center;gap:4px;text-transform:uppercase}
+.req{color:var(--gold);font-size:10px}
+.field input,.field select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 14px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color var(--transition);-webkit-appearance:none;appearance:none}
+.field input:focus,.field select:focus{border-color:var(--gold-dim);background:rgba(201,168,76,0.03)}
+.field input::placeholder{color:var(--text3)}
+.field input[readonly]{color:var(--gold)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23555' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+
+/* ERROR STATES */
+.field input.error,.field select.error{border-color:var(--red)!important;background:var(--red-bg)!important}
+.error-notice{background:var(--red-bg);border:1px solid var(--red-border);border-radius:var(--radius-sm);padding:11px 14px;margin-bottom:12px;font-size:12px;color:var(--red);display:none;align-items:flex-start;gap:8px;line-height:1.6}
+.error-notice.show{display:flex}
+.canvas-wrap.error-canvas{border-color:var(--red)!important;background:var(--red-bg)!important}
+.upload-zone.error-zone{border-color:var(--red)!important;background:var(--red-bg)!important}
+.check-box.error-box{border-color:var(--red)!important;background:var(--red-bg)!important}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.shake{animation:shake 0.4s ease}
+
+/* SIG BADGES */
+.sig-badge{font-size:10px;padding:3px 8px;border-radius:4px;display:inline-flex;align-items:center;gap:4px;margin-bottom:8px}
+.sig-badge.need{color:var(--red);background:var(--red-bg);border:1px solid var(--red-border)}
+.sig-badge.done{color:var(--green);background:rgba(76,175,80,0.08);border:1px solid rgba(76,175,80,0.25);display:none}
+
+.clause{background:var(--bg3);border-radius:var(--radius-sm);border:1px solid var(--border);padding:14px;margin-bottom:10px}
+.clause-title{font-size:11px;color:var(--gold);font-weight:500;letter-spacing:0.6px;margin-bottom:8px;text-transform:uppercase;font-family:'DM Mono',monospace}
+.clause-body{font-size:12px;color:var(--text2);line-height:1.75}
+.clause-body li{list-style:none;padding:2px 0;display:flex;gap:8px}
+.clause-body li::before{content:'—';color:var(--text3);flex-shrink:0}
+.notice{background:rgba(201,168,76,0.05);border:1px solid var(--border-gold);border-radius:var(--radius-sm);padding:14px;margin-bottom:10px}
+.notice-title{font-size:11px;color:var(--gold);font-weight:500;margin-bottom:7px}
+.notice-body{font-size:12px;color:rgba(240,237,230,0.6);line-height:1.75}
+.minor-banner{background:rgba(201,168,76,0.06);border:1px solid var(--border-gold);border-radius:var(--radius-sm);padding:11px 14px;margin-bottom:16px;font-size:12px;color:var(--gold);display:flex;align-items:flex-start;gap:8px}
+.check-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;cursor:pointer;border-bottom:1px solid var(--border)}
+.check-item:last-child{border-bottom:none}
+.check-box{width:20px;height:20px;border:1.5px solid var(--border);border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all var(--transition);background:var(--bg3)}
+.check-box.checked{background:var(--gold);border-color:var(--gold)}
+.check-box.checked::after{content:'✓';font-size:11px;color:#000;font-weight:700}
+.check-text{font-size:12px;color:var(--text2);line-height:1.65}
+.check-text em{color:var(--gold);font-style:normal;font-weight:500}
+.sig-type-tabs{display:flex;gap:8px;margin-bottom:12px}
+.sig-type-tab{padding:7px 18px;border-radius:20px;font-size:11px;cursor:pointer;border:1px solid var(--border);color:var(--text2);background:transparent;transition:all var(--transition);letter-spacing:0.4px}
+.sig-type-tab.active{background:rgba(201,168,76,0.1);border-color:var(--border-gold);color:var(--gold)}
+.canvas-wrap{background:var(--bg3);border:1px dashed rgba(201,168,76,0.3);border-radius:var(--radius-sm);height:130px;display:flex;align-items:center;justify-content:center;cursor:crosshair;position:relative;overflow:hidden;touch-action:none;transition:border-color var(--transition),background var(--transition)}
+.canvas-wrap canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+.canvas-hint{font-size:12px;color:var(--text3);pointer-events:none;user-select:none}
+.sig-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+.sig-clear{background:transparent;border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-size:11px;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all var(--transition)}
+.sig-clear:hover{border-color:var(--gold-dim);color:var(--gold)}
+.sig-timestamp{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace}
+.upload-zone{border:1px dashed var(--border);border-radius:var(--radius-sm);padding:22px 16px;text-align:center;cursor:pointer;transition:all var(--transition);margin-bottom:10px;background:var(--bg3)}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--gold-dim);background:rgba(201,168,76,0.03)}
+.upload-icon{font-size:26px;margin-bottom:7px}
+.upload-label{font-size:13px;color:var(--text2);margin-bottom:3px;font-weight:500}
+.upload-sub{font-size:10px;color:var(--text3)}
+.file-list{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.file-item{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;display:flex;align-items:center;gap:10px}
+.file-ico{font-size:18px}
+.file-info{flex:1;min-width:0}
+.file-name{font-size:12px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-size{font-size:10px;color:var(--text3);margin-top:1px}
+.file-rm{width:22px;height:22px;border-radius:50%;background:var(--bg4);border:1px solid var(--border);color:var(--text3);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all var(--transition)}
+.file-rm:hover{border-color:var(--red);color:var(--red)}
+.divider{height:1px;background:var(--border);margin:18px 0}
+
+/* FOOTER */
+.footer{padding:14px 20px calc(14px + var(--safe-bottom));border-top:1px solid var(--border);background:rgba(10,10,10,0.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);position:sticky;bottom:0;z-index:100}
+.btn-primary{width:100%;padding:15px;background:var(--gold);color:#000;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:0.4px;transition:all var(--transition);display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary:active{transform:scale(0.99);background:var(--gold-light)}
+.btn-secondary{width:100%;padding:12px;background:transparent;color:var(--text2);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px;transition:all var(--transition)}
+.btn-secondary:hover{border-color:var(--border-gold);color:var(--gold)}
+.footer-note{text-align:center;font-size:10px;color:var(--text3);margin-top:10px;display:flex;align-items:center;justify-content:center;gap:5px}
+
+/* SUCCESS */
+.success-screen{display:none;flex-direction:column;align-items:center;padding:36px 24px 40px;text-align:center}
+.success-ring{width:72px;height:72px;border-radius:50%;background:rgba(201,168,76,0.12);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:22px;flex-shrink:0;animation:ringPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both}
+@keyframes ringPop{from{transform:scale(0.4);opacity:0}to{transform:scale(1);opacity:1}}
+.success-title{font-size:22px;font-weight:500;color:var(--text);margin-bottom:8px}
+.success-sub{font-size:13px;color:var(--text2);margin-bottom:26px;line-height:1.75}
+.success-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;width:100%;margin-bottom:20px;text-align:left;position:relative;overflow:hidden}
+.success-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent)}
+.meta-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px}
+.meta-row:last-child{border-bottom:none;padding-bottom:0}
+.meta-key{color:var(--text2)}
+.meta-val{color:var(--text);font-family:'DM Mono',monospace;font-size:11px}
+.meta-val.ok{color:var(--green)}
+.funnel-card{background:rgba(201,168,76,0.05);border:1px solid var(--border-gold);border-radius:var(--radius-sm);padding:14px 16px;width:100%;margin-bottom:16px;text-align:left}
+.funnel-label{font-size:9px;color:var(--gold);letter-spacing:1.5px;font-family:'DM Mono',monospace;margin-bottom:12px;text-transform:uppercase}
+.funnel-row{display:flex;gap:12px;font-size:12px;color:var(--text2);align-items:flex-start;padding:5px 0;border-bottom:1px solid rgba(37,37,37,0.6)}
+.funnel-row:last-child{border-bottom:none}
+.funnel-num{color:var(--gold);font-weight:600;flex-shrink:0;font-family:'DM Mono',monospace;font-size:11px;min-width:18px;padding-top:1px}
+.funnel-txt b{color:var(--text);font-weight:500}
+.btn-line{width:100%;padding:15px;background:var(--line-green);color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:10px;transition:all var(--transition)}
+.btn-line:active{opacity:0.9;transform:scale(0.99)}
+.line-icon{width:20px;height:20px;background:#fff;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--line-green)}
+
+/* SUBMIT LOADING */
+.submit-overlay{display:none;position:fixed;inset:0;z-index:9998;background:rgba(10,10,10,0.88);backdrop-filter:blur(8px);flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.submit-overlay.show{display:flex}
+.submit-spinner{width:40px;height:40px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.submit-text{font-size:13px;color:var(--text2);letter-spacing:0.4px}
+</style>
+</head>
+<body>
+
+<!-- LIFF LOADING -->
+<div id="liffLoading">
+  <div class="loading-logo">KS</div>
+  <div class="loading-text">正在連線 LINE 帳號...</div>
+  <div class="loading-bar"><div class="loading-fill"></div></div>
+</div>
+
+<!-- SUBMIT LOADING -->
+<div class="submit-overlay" id="submitOverlay">
+  <div class="submit-spinner"></div>
+  <div class="submit-text">合約提交中，請稍候…</div>
+</div>
+
+<div class="app" id="mainApp" style="display:none">
+
+<div class="header">
+  <div class="header-row">
+    <div class="logo">
+      <div class="logo-mark">KS</div>
+      <div><div class="logo-name">KAYON STUDIO</div><div class="logo-sub">KARBØN × GAIA</div></div>
+    </div>
+    <div class="status-pill" id="headerBadge">課程合約</div>
+  </div>
+</div>
+
+<div class="progress-wrap" id="progressWrap">
+  <div class="steps">
+    <div class="step active" id="s1"><div class="step-dot">1</div><div class="step-line"></div></div>
+    <div class="step" id="s2"><div class="step-dot">2</div><div class="step-line"></div></div>
+    <div class="step" id="s3"><div class="step-dot">3</div><div class="step-line"></div></div>
+    <div class="step" id="s4"><div class="step-dot">4</div></div>
+  </div>
+  <div class="step-labels">
+    <div class="step-label active" id="sl1">學員資料</div>
+    <div class="step-label" id="sl2">合約</div>
+    <div class="step-label" id="sl3">法代</div>
+    <div class="step-label" id="sl4">完成</div>
+  </div>
+</div>
+
+<div class="tabs-wrap" id="mainTabs">
+  <div class="tab active" onclick="go('info')">學員資料</div>
+  <div class="tab" onclick="go('contract')">課程合約</div>
+  <div class="tab" onclick="go('guardian')">法代同意書</div>
+  <div class="tab" onclick="go('sign')">電子簽名</div>
+  <div class="tab" onclick="go('upload')">附件</div>
+</div>
+
+<div class="content" id="mainContent">
+
+  <!-- 學員資料 -->
+  <div class="page active" id="page-info">
+    <div class="section-header">
+      <div class="section-icon">👤</div>
+      <div><div class="section-num">01 — STUDENT INFO</div><div class="section-title">學員基本資料</div></div>
+    </div>
+    <div class="liff-user-bar" id="liffUserBar">
+      <div class="liff-avatar-placeholder" id="liffAvatarPH">👤</div>
+      <img id="liffAvatarImg" class="liff-avatar" style="display:none" alt="">
+      <div>
+        <div class="liff-name" id="liffDisplayName">連線中...</div>
+        <div class="liff-label">LINE 帳號已驗證</div>
+      </div>
+      <div class="liff-verified">✓ 已驗證</div>
+    </div>
+    <div class="info-card">
+      <div class="info-row"><span class="info-key">合約編號</span><span class="info-val mono" id="contractNo">—</span></div>
+      <div class="info-row"><span class="info-key">簽署日期</span><span class="info-val mono" id="signDate">—</span></div>
+      <div class="info-row"><span class="info-key">LINE UID</span><span class="info-val mono" id="lineUidDisp" style="font-size:10px">—</span></div>
+    </div>
+    <div class="field"><div class="field-label">學員姓名 <span class="req">*</span></div><input type="text" placeholder="請輸入真實姓名" id="studentName" oninput="sync();clearErr(this)"></div>
+    <div class="field-row">
+      <div class="field"><div class="field-label">出生日期 <span class="req">*</span></div><input type="date" id="studentBirth" onchange="calcAge();clearErr(this)"></div>
+      <div class="field"><div class="field-label">年齡</div><input type="text" id="studentAge" placeholder="自動計算" readonly></div>
+    </div>
+    <div class="field"><div class="field-label">聯絡電話 <span class="req">*</span></div><input type="tel" placeholder="0900-000-000" id="studentPhone" oninput="clearErr(this)"></div>
+    <div class="field"><div class="field-label">電子信箱 <span class="req">*</span></div><input type="email" placeholder="email@example.com" id="studentEmail" oninput="clearErr(this)"></div>
+    <div class="field">
+      <div class="field-label">課程方案 <span class="req">*</span></div>
+      <select id="courseType" onchange="sync();updateP360();clearErr(this)">
+        <option value="">— 請選擇課程方案 —</option>
+        <option value="創作啟航計畫 A｜4堂｜$4,200" data-url="https://www.pro360.com.tw/shop/item/41524">🎵 創作啟航計畫 A｜4堂｜$4,200</option>
+        <option value="創作啟航計畫 B｜8+1堂｜$8,000" data-url="https://www.pro360.com.tw/shop/item/41524">🎵 創作啟航計畫 B｜8+1堂｜$8,000</option>
+        <option value="聲音啟航計畫 A｜4堂｜$4,200" data-url="https://www.pro360.com.tw/shop/item/41524">🎙 聲音啟航計畫 A｜4堂｜$4,200</option>
+        <option value="聲音啟航計畫 B｜8+1堂｜$8,000" data-url="https://www.pro360.com.tw/shop/item/41524">🎙 聲音啟航計畫 B｜8+1堂｜$8,000</option>
+      </select>
+    </div>
+    <div id="minorBanner" style="display:none"><div class="minor-banner">⚠️ 偵測到未滿18歲，需填寫法定代理人同意書（第三步驟）</div></div>
+  </div>
+
+  <!-- 課程合約 -->
+  <div class="page" id="page-contract">
+    <div class="section-header">
+      <div class="section-icon">📋</div>
+      <div><div class="section-num">02 — CONTRACT</div><div class="section-title">線上課程合約書</div></div>
+    </div>
+    <div class="clause"><div class="clause-title">§1 付款規範</div><ul class="clause-body"><li>課程方案與付款方式依雙方書面確認內容為準</li><li>完成付款後始完成課程預約，未付款前名額不予保留</li><li>付款確認後系統自動發送確認通知至學員信箱</li></ul></div>
+    <div class="clause"><div class="clause-title">§2 課程進行規範</div><ul class="clause-body"><li>使用 Google Meet 進行線上一對一授課</li><li>遲到超過10分鐘視同缺席，該堂課計為已消耗</li><li>課程不得自行錄音或錄影，違者終止合約</li><li>講師將提供課程講義及相關數位教材</li></ul></div>
+    <div class="clause"><div class="clause-title">§3 改期與取消</div><ul class="clause-body"><li>改期須透過 LINE 官方系統提前24小時操作</li><li>當月未使用堂數不累積至下月</li><li>課程開始後不提供退款</li></ul></div>
+    <div class="clause"><div class="clause-title">§4 智慧財產</div><ul class="clause-body"><li>課程內容與教材屬 KAYON STUDIO 智慧財產</li><li>未經授權不得外流、轉載、販售任何課程內容</li><li>學員創作作品著作權歸學員本人所有</li></ul></div>
+    <div class="notice"><div class="notice-title">⚖️ 法律效力聲明</div><div class="notice-body">本合約依《電子簽章法》第4條，電子簽署後具備與紙本相同之法律效力。</div></div>
+  </div>
+
+  <!-- 法代同意書 -->
+  <div class="page" id="page-guardian">
+    <div class="section-header">
+      <div class="section-icon">👨‍👩‍👧</div>
+      <div><div class="section-num">03 — GUARDIAN</div><div class="section-title">法定代理人同意書</div></div>
+    </div>
+    <div class="minor-banner">📋 適用於未滿18歲學員，成年學員可直接跳至下一步</div>
+    <div class="info-card">
+      <div class="info-row"><span class="info-key">學員姓名</span><span class="info-val" id="gName">—</span></div>
+      <div class="info-row"><span class="info-key">課程方案</span><span class="info-val" id="gCourse">—</span></div>
+    </div>
+    <div class="field"><div class="field-label">法定代理人姓名 <span class="req">*</span></div><input type="text" placeholder="請輸入真實姓名" id="gN" oninput="clearErr(this)"></div>
+    <div class="field"><div class="field-label">關係 <span class="req">*</span></div>
+      <select id="gR" onchange="clearErr(this)"><option value="">— 請選擇 —</option><option>父親</option><option>母親</option><option>監護人</option><option>其他</option></select>
+    </div>
+    <div class="field"><div class="field-label">聯絡電話（主） <span class="req">*</span></div><input type="tel" placeholder="0900-000-000" id="gP" oninput="clearErr(this)"></div>
+    <div class="field"><div class="field-label">聯絡電話（備用）</div><input type="tel" placeholder="選填" id="gP2"></div>
+    <div class="field"><div class="field-label">信箱 <span class="req">*</span></div><input type="email" placeholder="電子信箱" id="gE" oninput="clearErr(this)"></div>
+    <div class="divider"></div>
+    <div class="section-header" style="margin-bottom:8px">
+      <div class="section-icon">🪪</div>
+      <div><div class="section-num">身份驗證</div><div class="section-title">法代身份證明 <span style="color:var(--red);font-size:11px;font-weight:400">*未成年必填</span></div></div>
+    </div>
+    <div class="notice" style="margin-bottom:12px"><div class="notice-title">📌 未成年學員必須上傳，缺文件無法提交</div><div class="notice-body">身分證（正反面）或戶口名簿（含學員頁）擇一上傳。依個資法加密保存。</div></div>
+    <div class="error-notice" id="gDocError">⚠️ 未成年學員必須上傳法定代理人身份證明文件才能提交</div>
+    <div class="field">
+      <div class="field-label">國民身份證（正反面）</div>
+      <div class="upload-zone" id="gIdZone" onclick="upG('id')" ondragover="onGDragOver(event,'id')" ondragleave="onGDragLeave('id')" ondrop="onGDrop(event,'id')">
+        <div class="upload-icon">🪪</div><div class="upload-label">點擊或拖曳上傳</div><div class="upload-sub">JPG、PNG、PDF，限 10MB · 請遮蓋後8碼</div>
+      </div>
+      <div class="file-list" id="gIdFiles"></div>
+    </div>
+    <div style="text-align:center;font-size:12px;color:var(--text3);margin:-4px 0 10px">或</div>
+    <div class="field">
+      <div class="upload-zone" id="gHhZone" onclick="upG('hh')" ondragover="onGDragOver(event,'hh')" ondragleave="onGDragLeave('hh')" ondrop="onGDrop(event,'hh')">
+        <div class="upload-icon">📒</div><div class="upload-label">戶口名簿（含學員頁）</div><div class="upload-sub">JPG、PNG、PDF，限 10MB</div>
+      </div>
+      <div class="file-list" id="gHhFiles"></div>
+    </div>
+    <input type="file" id="gFileInput" style="display:none" accept="image/*,.pdf">
+    <div class="divider"></div>
+    <div class="error-notice" id="gCheckError">⚠️ 請勾選所有法定代理人同意事項後方可繼續</div>
+    <div id="gChecks">
+      <div class="check-item" onclick="toggleCheck(this,'gCheckError')"><div class="check-box"></div><div class="check-text">同意<em>未成年學員</em>參與 KAYON STUDIO 線上課程</div></div>
+      <div class="check-item" onclick="toggleCheck(this,'gCheckError')"><div class="check-box"></div><div class="check-text">已閱讀並同意<em>課程合約</em>所有條款</div></div>
+      <div class="check-item" onclick="toggleCheck(this,'gCheckError')"><div class="check-box"></div><div class="check-text">同意電子簽署具備<em>法律效力</em></div></div>
+      <div class="check-item" onclick="toggleCheck(this,'gCheckError')"><div class="check-box"></div><div class="check-text">同意依<em>個資法</em>蒐集相關資料，承諾資料真實正確</div></div>
+    </div>
+  </div>
+
+  <!-- 電子簽名 -->
+  <div class="page" id="page-sign">
+    <div class="section-header">
+      <div class="section-icon">✍️</div>
+      <div><div class="section-num">04 — SIGNATURE</div><div class="section-title">電子簽名</div></div>
+    </div>
+    <div class="notice" style="margin-bottom:16px"><div class="notice-body">本人已詳細閱讀合約所有條款，同意遵守各項規定。依《電子簽章法》本簽名具完整法律效力。</div></div>
+
+    <!-- ★ 學員簽名 -->
+    <div style="margin-bottom:18px">
+      <div class="field-label" style="margin-bottom:8px">學員簽名 <span class="req">*</span></div>
+      <div class="sig-type-tabs">
+        <div class="sig-type-tab active" id="drawTab0" onclick="switchSigMode('draw',0)">手寫簽名</div>
+        <div class="sig-type-tab" id="typeTab0" onclick="switchSigMode('type',0)">打字簽名</div>
+      </div>
+      <div id="drawPanel0">
+        <span class="sig-badge need" id="sigNeed0">✗ 尚未簽名，無法提交</span>
+        <span class="sig-badge done" id="sigOk0">✓ 簽名完成</span>
+        <div class="canvas-wrap" id="wrap0"><canvas id="cv0"></canvas><div class="canvas-hint" id="h0">用手指在此簽名</div></div>
+        <div class="sig-row"><button class="sig-clear" onclick="clr(0)">清除重簽</button><div class="sig-timestamp" id="t0">尚未簽署</div></div>
+      </div>
+      <div id="typePanel0" style="display:none">
+        <span class="sig-badge need" id="typeNeed0">✗ 尚未輸入，無法提交</span>
+        <span class="sig-badge done" id="typeOk0">✓ 打字簽名完成</span>
+        <div class="field"><input type="text" id="typedSig0" placeholder="輸入姓名作為電子簽名" oninput="onTyped(0)" style="font-size:20px;font-family:'DM Mono',monospace;color:var(--gold);letter-spacing:3px;text-align:center"></div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ★ 法代簽名（未成年必填） -->
+    <div id="gSigBlock" style="display:none">
+      <div class="field-label" style="margin-bottom:8px">法定代理人簽名 <span class="req">*</span><span style="color:var(--red);font-size:10px;margin-left:6px">未成年必填，缺簽無法提交</span></div>
+      <span class="sig-badge need" id="sigNeed1">✗ 法代尚未簽名，無法提交</span>
+      <span class="sig-badge done" id="sigOk1">✓ 法代簽名完成</span>
+      <div class="canvas-wrap" id="wrap1" style="height:110px"><canvas id="cv1"></canvas><div class="canvas-hint" id="h1">法定代理人在此簽名</div></div>
+      <div class="sig-row"><button class="sig-clear" onclick="clr(1)">清除重簽</button><div class="sig-timestamp" id="t1">尚未簽署</div></div>
+      <div class="divider"></div>
+    </div>
+
+    <!-- ★ 最終確認框 -->
+    <div class="error-notice" id="finalCheckError">⚠️ 請勾選全部確認事項後方可提交合約</div>
+    <div id="finalChecks">
+      <div class="check-item" onclick="toggleCheck(this,'finalCheckError')"><div class="check-box"></div><div class="check-text">已閱讀全部合約內容，同意所有條款，確認填寫資料正確無誤</div></div>
+      <div class="check-item" onclick="toggleCheck(this,'finalCheckError')"><div class="check-box"></div><div class="check-text">同意 KAYON STUDIO 將合約電子檔儲存至 Google Drive 及相關系統</div></div>
+      <div class="check-item" onclick="toggleCheck(this,'finalCheckError')"><div class="check-box"></div><div class="check-text">了解電子合約簽署後即具法律約束力，無法單方撤銷</div></div>
+    </div>
+  </div>
+
+  <!-- 附件 -->
+  <div class="page" id="page-upload">
+    <div class="section-header">
+      <div class="section-icon">📎</div>
+      <div><div class="section-num">05 — FILES</div><div class="section-title">附件上傳</div></div>
+    </div>
+    <div class="field">
+      <div class="field-label">學生證 <span style="color:var(--text3);font-size:10px">（享學生優惠必填）</span></div>
+      <div class="upload-zone" onclick="up(0)"><div class="upload-icon">🎓</div><div class="upload-label">上傳學生證</div><div class="upload-sub">JPG、PNG、PDF，限 10MB</div></div>
+      <div class="file-list" id="fl0"></div>
+    </div>
+    <div class="field">
+      <div class="field-label">清寒證明 <span style="color:var(--text3);font-size:10px">（特殊優惠必填）</span></div>
+      <div class="upload-zone" onclick="up(1)"><div class="upload-icon">📄</div><div class="upload-label">上傳清寒證明</div><div class="upload-sub">JPG、PNG、PDF，限 10MB</div></div>
+      <div class="file-list" id="fl1"></div>
+    </div>
+    <input type="file" id="fi" style="display:none" accept="image/*,.pdf">
+    <div class="notice"><div class="notice-title">🔒 資料安全說明</div><div class="notice-body">所有文件以 AES-256 加密儲存於 Google Drive，僅授權人員可存取。依個資法合約期滿後30天刪除。</div></div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="success-screen" id="successScreen">
+    <div class="success-ring">✓</div>
+    <div class="success-title">簽署完成</div>
+    <div class="success-sub">合約已提交。<br>確認通知將發送至您的 LINE 及電子信箱。</div>
+    <div class="success-card">
+      <div class="meta-row"><span class="meta-key">合約編號</span><span class="meta-val" id="sNo">—</span></div>
+      <div class="meta-row"><span class="meta-key">學員</span><span class="meta-val" id="sN">—</span></div>
+      <div class="meta-row"><span class="meta-key">課程方案</span><span class="meta-val" id="sC">—</span></div>
+      <div class="meta-row"><span class="meta-key">簽署時間</span><span class="meta-val" id="sT">—</span></div>
+      <div class="meta-row"><span class="meta-key">LINE 通知</span><span class="meta-val ok">已發送 ✓</span></div>
+      <div class="meta-row"><span class="meta-key">Google Drive</span><span class="meta-val ok">已儲存 ✓</span></div>
+    </div>
+    <button class="btn-primary" onclick="goP360()" style="width:100%;margin-bottom:16px">💳 前往 Pro360 完成付款 →</button>
+    <div class="funnel-card">
+      <div class="funnel-label">付款後完整流程</div>
+      <div class="funnel-row"><div class="funnel-num">①</div><div class="funnel-txt"><b>Pro360</b> 選擇方案 → <b>藍新金流</b>結帳</div></div>
+      <div class="funnel-row"><div class="funnel-num">②</div><div class="funnel-txt">結帳完成後，系統自動導回 <b>LINE 簽署合約</b></div></div>
+      <div class="funnel-row"><div class="funnel-num">③</div><div class="funnel-txt">合約簽署完成 → <b>LINE@ 預約課程時段</b></div></div>
+    </div>
+    <button class="btn-line" onclick="closeLiff()">
+      <div class="line-icon">L</div>返回 LINE 對話
+    </button>
+  </div>
+
+</div><!-- .content -->
+
+<div class="footer" id="footer">
+  <button class="btn-primary" id="nBtn" onclick="next()"><span id="nTxt">繼續下一步</span><span>→</span></button>
+  <button class="btn-secondary" id="pBtn" onclick="prev()" style="display:none">← 上一步</button>
+  <div class="footer-note">🔒 LINE 帳號驗證 · 電子簽章法保障</div>
+</div>
+
+</div><!-- .app -->
+
+<script>
+/* ════════ CONFIG ════════ */
+const LIFF_ID  = '2010027736-kgBDDUmh';
+const GAS_URL  = 'https://script.google.com/macros/s/AKfycbzpMIhdFGQZ23pBroz01mR7F-rJb3LguJsULP9Z3NDw0sWDVcqA_GalRsgMlhz1--Xs/exec';
+
+/* ════════ STATE ════════ */
+const sections = ['info','contract','guardian','sign','upload'];
+let cur = 0;
+let liffProfile = null;
+let p360Url = 'https://www.pro360.com.tw/shop/item/41524';
+const uploadedFiles = [[], []];
+let activeUp = 0;
+const cvCtxs = [null, null];
+let drawing = false, lx = 0, ly = 0, activeCv = -1;
+const sigMode = ['draw','draw'];
+const gDocs = { id:[], hh:[] };
+let activeGType = 'id';
+
+/* ════════ INIT ════════ */
+(function(){
+  const no = 'KS-'+new Date().getFullYear()+'-'+String(Math.floor(Math.random()*900+100)).padStart(3,'0');
+  document.getElementById('contractNo').textContent = no;
+  document.getElementById('signDate').textContent = new Date().toLocaleDateString('zh-TW');
+  document.getElementById('gSigBlock').style.display = 'none';
+  renderFoot();
+})();
+
+/* ════════ LIFF ════════ */
+async function initLIFF(){
+  try{
+    await liff.init({ liffId: LIFF_ID });
+    if(!liff.isLoggedIn()){ liff.login({ redirectUri: window.location.href }); return; }
+    liffProfile = await liff.getProfile();
+    document.getElementById('liffLoading').classList.add('hide');
+    document.getElementById('mainApp').style.display = 'flex';
+    document.getElementById('liffDisplayName').textContent = liffProfile.displayName;
+    document.getElementById('lineUidDisp').textContent = liffProfile.userId.substring(0,20)+'...';
+    if(liffProfile.pictureUrl){
+      const img = document.getElementById('liffAvatarImg');
+      img.src = liffProfile.pictureUrl; img.style.display='block';
+      document.getElementById('liffAvatarPH').style.display='none';
+    }
+    if(!document.getElementById('studentName').value)
+      document.getElementById('studentName').value = liffProfile.displayName;
+  }catch(err){
+    document.getElementById('liffLoading').classList.add('hide');
+    document.getElementById('mainApp').style.display = 'flex';
+    document.getElementById('liffUserBar').style.display = 'none';
+  }
+}
+
+function closeLiff(){
+  if(liff.isInClient()) liff.closeWindow();
+  else window.location.href='https://line.me/R/ti/p/@336uwmgq';
+}
+
+async function sendLineMsg(data){
+  try{
+    if(liff.isInClient()){
+      await liff.sendMessages([{
+        type:'text',
+        text:`✅ 課程合約簽署完成！\n📋 合約編號：${data.contractNo}\n👤 學員：${data.name}\n📚 課程：${data.course}\n⏰ 時間：${data.time}\n\n感謝您選擇 KAYON STUDIO！`
+      }]);
+    }
+  }catch(e){ console.log('LINE msg failed',e); }
+}
+
+/* ════════ HELPERS ════════ */
+function isMinor(){ return (parseInt(document.getElementById('studentAge').value)||99)<18; }
+
+function canvasHasStroke(id){
+  const cv=document.getElementById(id);
+  if(!cv) return false;
+  const d=cv.getContext('2d').getImageData(0,0,cv.width,cv.height).data;
+  return Array.from(d).some((v,i)=>i%4===3&&v>0);
+}
+
+function clearErr(el){ el.classList.remove('error'); }
+
+function markErr(id){
+  const el=document.getElementById(id);
+  if(!el) return;
+  el.classList.add('error');
+  el.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function shake(el){
+  el.classList.add('shake');
+  setTimeout(()=>el.classList.remove('shake'),400);
+}
+
+/* ════════ ALERT ════════ */
+function showAlert(msg){
+  let el=document.getElementById('alertBanner');
+  if(!el){
+    el=document.createElement('div'); el.id='alertBanner';
+    el.style.cssText='position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:9999;max-width:430px;width:100%;background:#c0392b;color:#fff;padding:13px 20px;font-size:13px;display:flex;align-items:center;gap:8px;animation:slideDown 0.3s ease;border-radius:0 0 10px 10px;line-height:1.5';
+    document.body.appendChild(el);
+    const s=document.createElement('style');
+    s.textContent='@keyframes slideDown{from{transform:translateX(-50%) translateY(-100%)}to{transform:translateX(-50%) translateY(0)}}';
+    document.head.appendChild(s);
+  }
+  el.innerHTML='⚠️ '+msg; el.style.display='flex';
+  clearTimeout(el._t); el._t=setTimeout(()=>el.style.display='none',4000);
+}
+
+/* ════════ SYNC ════════ */
+function calcAge(){
+  const v=document.getElementById('studentBirth').value;
+  if(!v) return;
+  const age=Math.floor((new Date()-new Date(v))/(365.25*24*3600*1000));
+  document.getElementById('studentAge').value=age+' 歲';
+  const minor=age<18;
+  document.getElementById('minorBanner').style.display=minor?'block':'none';
+  document.getElementById('gSigBlock').style.display=minor?'block':'none';
+  sync();
+}
+
+function sync(){
+  document.getElementById('gName').textContent=document.getElementById('studentName').value||'—';
+  document.getElementById('gCourse').textContent=document.getElementById('courseType').value||'—';
+}
+
+function updateP360(){
+  const sel=document.getElementById('courseType');
+  const url=sel.options[sel.selectedIndex]?.getAttribute('data-url');
+  if(url) p360Url=url;
+}
+
+/* ════════ NAVIGATION ════════ */
+function go(s){
+  const idx=sections.indexOf(s);
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+s).classList.add('active');
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  cur=idx;
+  if(s==='sign') setTimeout(initCvs,50);
+  renderFoot(); sync();
+  document.getElementById('mainContent').scrollTop=0;
+}
+
+function renderFoot(){
+  document.getElementById('pBtn').style.display=cur>0?'block':'none';
+  document.getElementById('nTxt').textContent=cur===sections.length-1?'提交合約':'繼續下一步';
+  for(let i=1;i<=4;i++){
+    const s=document.getElementById('s'+i), l=document.getElementById('sl'+i);
+    s.className='step'; l.className='step-label';
+    if(i<=cur+1){s.classList.add(i<cur+1?'done':'active');l.classList.add(i<cur+1?'done':'active');}
+  }
+}
+
+/* ════════ CHECKS ════════ */
+function toggleCheck(el, errId){
+  const box=el.querySelector('.check-box');
+  box.classList.toggle('checked');
+  if(box.classList.contains('checked')){
+    box.classList.remove('error-box');
+    if(errId){
+      const group=el.closest('[id]');
+      if(group){
+        const all=group.querySelectorAll('.check-box');
+        if([...all].every(b=>b.classList.contains('checked'))){
+          const e=document.getElementById(errId);
+          if(e) e.classList.remove('show');
+        }
+      }
+    }
+  }
+}
+
+/* ════════════════════════════════════════
+   ★★★ VALIDATE — 嚴格版 ★★★
+════════════════════════════════════════ */
+function validateStep(section){
+
+  /* ── INFO ── */
+  if(section==='info'){
+    const name=document.getElementById('studentName').value.trim();
+    const birth=document.getElementById('studentBirth').value;
+    const phone=document.getElementById('studentPhone').value.trim();
+    const email=document.getElementById('studentEmail').value.trim();
+    const course=document.getElementById('courseType').value;
+    if(!name)  { showAlert('請填寫學員姓名');     markErr('studentName');  return false; }
+    if(!birth) { showAlert('請填寫出生日期');     markErr('studentBirth'); return false; }
+    if(!phone) { showAlert('請填寫聯絡電話');     markErr('studentPhone'); return false; }
+    if(!email) { showAlert('請填寫電子信箱');     markErr('studentEmail'); return false; }
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showAlert('電子信箱格式不正確'); markErr('studentEmail'); return false; }
+    if(!course){ showAlert('請選擇課程方案');     markErr('courseType');   return false; }
+    return true;
+  }
+
+  /* ── GUARDIAN ── */
+  if(section==='guardian' && isMinor()){
+    const gN=document.getElementById('gN').value.trim();
+    const gR=document.getElementById('gR').value;
+    const gP=document.getElementById('gP').value.trim();
+    const gE=document.getElementById('gE').value.trim();
+    if(!gN){ showAlert('請填寫法定代理人姓名');     markErr('gN'); return false; }
+    if(!gR){ showAlert('請選擇法定代理人與學員關係'); markErr('gR'); return false; }
+    if(!gP){ showAlert('請填寫法定代理人聯絡電話');  markErr('gP'); return false; }
+    if(!gE){ showAlert('請填寫法定代理人電子信箱');  markErr('gE'); return false; }
+
+    // ★ 身份文件必須上傳
+    if(!gDocs.id.length && !gDocs.hh.length){
+      showAlert('未成年學員必須上傳法定代理人身份證明文件');
+      const errEl=document.getElementById('gDocError');
+      errEl.classList.add('show');
+      const zId=document.getElementById('gIdZone'), zHh=document.getElementById('gHhZone');
+      zId.classList.add('error-zone'); shake(zId);
+      zHh.classList.add('error-zone');
+      zId.scrollIntoView({behavior:'smooth',block:'center'});
+      return false;
+    }
+    document.getElementById('gDocError').classList.remove('show');
+    document.getElementById('gIdZone').classList.remove('error-zone');
+    document.getElementById('gHhZone').classList.remove('error-zone');
+
+    // ★ 全部同意框必須勾選
+    const boxes=document.querySelectorAll('#gChecks .check-box');
+    const unchecked=[...boxes].filter(b=>!b.classList.contains('checked'));
+    if(unchecked.length){
+      showAlert('請勾選所有法定代理人同意事項');
+      document.getElementById('gCheckError').classList.add('show');
+      unchecked.forEach(b=>{ b.classList.add('error-box'); shake(b); setTimeout(()=>b.classList.remove('error-box'),600); });
+      document.getElementById('gChecks').scrollIntoView({behavior:'smooth',block:'center'});
+      return false;
+    }
+    document.getElementById('gCheckError').classList.remove('show');
+    return true;
+  }
+
+  /* ── SIGN ── */
+  if(section==='sign'){
+    // ★ 學員簽名：手寫或打字必須完成其中一個
+    const drawVisible=document.getElementById('drawPanel0').style.display!=='none';
+    if(drawVisible){
+      if(!canvasHasStroke('cv0')){
+        showAlert('請完成學員電子簽名後方可提交');
+        const w=document.getElementById('wrap0');
+        w.classList.add('error-canvas'); shake(w);
+        setTimeout(()=>w.classList.remove('error-canvas'),600);
+        w.scrollIntoView({behavior:'smooth',block:'center'});
+        return false;
+      }
+    } else {
+      if(!document.getElementById('typedSig0').value.trim()){
+        showAlert('請輸入學員打字簽名後方可提交');
+        markErr('typedSig0');
+        return false;
+      }
+    }
+
+    // ★ 法代簽名（未成年強制）
+    if(isMinor()){
+      if(!canvasHasStroke('cv1')){
+        showAlert('未成年學員必須完成法定代理人簽名');
+        const w=document.getElementById('wrap1');
+        w.classList.add('error-canvas'); shake(w);
+        setTimeout(()=>w.classList.remove('error-canvas'),600);
+        w.scrollIntoView({behavior:'smooth',block:'center'});
+        return false;
+      }
+    }
+
+    // ★ 最終確認框全部必須勾選
+    const finalBoxes=document.querySelectorAll('#finalChecks .check-box');
+    const uncheckedF=[...finalBoxes].filter(b=>!b.classList.contains('checked'));
+    if(uncheckedF.length){
+      showAlert('請勾選全部確認事項後方可提交合約');
+      document.getElementById('finalCheckError').classList.add('show');
+      uncheckedF.forEach(b=>{ b.classList.add('error-box'); shake(b); setTimeout(()=>b.classList.remove('error-box'),600); });
+      document.getElementById('finalChecks').scrollIntoView({behavior:'smooth',block:'center'});
+      return false;
+    }
+    document.getElementById('finalCheckError').classList.remove('show');
+    return true;
+  }
+
+  return true;
+}
+
+/* ════════════════════════════════════════
+   ★★★ FULL PRE-SUBMIT VALIDATE ★★★
+   防止 tab 跳過任何一步直接送出
+════════════════════════════════════════ */
+function fullValidate(){
+  if(!validateStep('info'))    { go('info');     return false; }
+  if(isMinor()&&!validateStep('guardian')){ go('guardian'); return false; }
+  if(!validateStep('sign'))    { go('sign');     return false; }
+  return true;
+}
+
+/* ════════ STEP NAV ════════ */
+function next(){
+  if(!validateStep(sections[cur])) return;
+  if(cur<sections.length-1) go(sections[cur+1]);
+  else submit();
+}
+function prev(){ if(cur>0) go(sections[cur-1]); }
+
+/* ════════ SIGNATURE ════════ */
+function switchSigMode(mode,idx){
+  sigMode[idx]=mode;
+  document.getElementById('drawTab'+idx).classList.toggle('active',mode==='draw');
+  document.getElementById('typeTab'+idx).classList.toggle('active',mode==='type');
+  document.getElementById('drawPanel'+idx).style.display=mode==='draw'?'block':'none';
+  document.getElementById('typePanel'+idx).style.display=mode==='type'?'block':'none';
+  refreshBadge(idx);
+}
+
+function refreshBadge(idx){
+  let done=sigMode[idx]==='draw'?canvasHasStroke('cv'+idx):!!(document.getElementById('typedSig'+idx)?.value.trim());
+  const need=document.getElementById('sigNeed'+idx), ok=document.getElementById('sigOk'+idx);
+  const tNeed=document.getElementById('typeNeed'+idx), tOk=document.getElementById('typeOk'+idx);
+  if(need){ need.style.display=done?'none':'inline-flex'; }
+  if(ok)  { ok.style.display=done?'inline-flex':'none'; }
+  if(tNeed){ tNeed.style.display=done?'none':'inline-flex'; }
+  if(tOk)  { tOk.style.display=done?'inline-flex':'none'; }
+}
+
+function onTyped(idx){
+  document.getElementById('typedSig'+idx)?.classList.remove('error');
+  refreshBadge(idx);
+}
+
+function initCvs(){
+  [0,1].forEach(i=>{
+    const cv=document.getElementById('cv'+i), w=document.getElementById('wrap'+i);
+    if(!cv||!w) return;
+    cv.width=w.offsetWidth; cv.height=w.offsetHeight;
+    const ctx=cv.getContext('2d');
+    ctx.strokeStyle='#C9A84C'; ctx.lineWidth=2.5; ctx.lineCap='round'; ctx.lineJoin='round';
+    cvCtxs[i]=ctx;
+    const pos=e=>{const r=cv.getBoundingClientRect(),s=e.touches?e.touches[0]:e;return{x:s.clientX-r.left,y:s.clientY-r.top};};
+    cv.addEventListener('mousedown', e=>{drawing=true;activeCv=i;const p=pos(e);lx=p.x;ly=p.y;});
+    cv.addEventListener('touchstart',e=>{e.preventDefault();drawing=true;activeCv=i;const p=pos(e);lx=p.x;ly=p.y;},{passive:false});
+    cv.addEventListener('mousemove', e=>{if(!drawing||activeCv!==i)return;drawLine(i,pos(e));});
+    cv.addEventListener('touchmove', e=>{e.preventDefault();if(!drawing||activeCv!==i)return;drawLine(i,pos(e));},{passive:false});
+    cv.addEventListener('mouseup', ()=>drawing=false);
+    cv.addEventListener('touchend',()=>drawing=false);
+    refreshBadge(i);
+  });
+}
+
+function drawLine(i,p){
+  cvCtxs[i].beginPath();cvCtxs[i].moveTo(lx,ly);cvCtxs[i].lineTo(p.x,p.y);cvCtxs[i].stroke();
+  lx=p.x;ly=p.y;
+  document.getElementById('h'+i).style.display='none';
+  document.getElementById('t'+i).textContent='✓ '+new Date().toLocaleString('zh-TW');
+  document.getElementById('wrap'+i).classList.remove('error-canvas');
+  refreshBadge(i);
+}
+
+function clr(i){
+  const cv=document.getElementById('cv'+i);
+  if(!cv) return;
+  cvCtxs[i].clearRect(0,0,cv.width,cv.height);
+  document.getElementById('h'+i).style.display='block';
+  document.getElementById('t'+i).textContent='尚未簽署';
+  refreshBadge(i);
+}
+
+/* ════════ FILE UPLOAD ════════ */
+function up(i){ activeUp=i; document.getElementById('fi').click(); }
+document.getElementById('fi').addEventListener('change',function(){
+  Array.from(this.files).forEach(f=>uploadedFiles[activeUp].push(f));
+  renderFL(activeUp); this.value='';
+});
+function renderFL(i){
+  const c=document.getElementById('fl'+i); c.innerHTML='';
+  uploadedFiles[i].forEach((f,j)=>{
+    const ext=f.name.split('.').pop().toUpperCase();
+    const ico={PDF:'📄',JPG:'🖼️',PNG:'🖼️',JPEG:'🖼️'}[ext]||'📎';
+    const el=document.createElement('div'); el.className='file-item';
+    el.innerHTML=`<span class="file-ico">${ico}</span><div class="file-info"><div class="file-name">${f.name}</div><div class="file-size">${(f.size/1048576).toFixed(2)} MB</div></div><button class="file-rm" onclick="rmF(${i},${j})">✕</button>`;
+    c.appendChild(el);
+  });
+}
+function rmF(i,j){ uploadedFiles[i].splice(j,1); renderFL(i); }
+
+/* ════════ GUARDIAN FILE UPLOAD ════════ */
+function upG(t){ activeGType=t; document.getElementById('gFileInput').click(); }
+function onGDragOver(e,t){ e.preventDefault(); document.getElementById(t==='id'?'gIdZone':'gHhZone').classList.add('drag'); }
+function onGDragLeave(t){ document.getElementById(t==='id'?'gIdZone':'gHhZone').classList.remove('drag'); }
+function onGDrop(e,t){ e.preventDefault(); onGDragLeave(t); addGDocs(t,e.dataTransfer.files); }
+document.getElementById('gFileInput').addEventListener('change',function(){ addGDocs(activeGType,this.files); this.value=''; });
+
+function addGDocs(type,fileList){
+  Array.from(fileList).forEach(f=>{
+    if(f.size>10*1024*1024){ showAlert('法代文件大小不可超過10MB：'+f.name); return; }
+    gDocs[type].push(f); renderGDocs(type);
+    document.getElementById('gDocError').classList.remove('show');
+    document.getElementById('gIdZone').classList.remove('error-zone');
+    document.getElementById('gHhZone').classList.remove('error-zone');
+  });
+}
+function renderGDocs(type){
+  const el=document.getElementById(type==='id'?'gIdFiles':'gHhFiles'); el.innerHTML='';
+  gDocs[type].forEach((f,i)=>{
+    const ext=f.name.split('.').pop().toUpperCase();
+    const ico={PDF:'📄',JPG:'🖼️',PNG:'🖼️',JPEG:'🖼️'}[ext]||'📎';
+    const d=document.createElement('div'); d.className='file-item';
+    d.innerHTML=`<span class="file-ico">${ico}</span><div class="file-info"><div class="file-name">${f.name}</div><div class="file-size">${(f.size/1048576).toFixed(2)} MB</div></div><button class="file-rm" onclick="removeGDoc('${type}',${i})">✕</button>`;
+    el.appendChild(d);
+  });
+}
+function removeGDoc(type,i){ gDocs[type].splice(i,1); renderGDocs(type); }
+
+/* ════════ PRO360 ════════ */
+function goP360(){
+  if(liff.isInClient()) liff.openWindow({url:p360Url,external:true});
+  else window.open(p360Url,'_blank');
+}
+
+/* ════════════════════════════════════════
+   ★ SUBMIT — fullValidate() 全局把關
+════════════════════════════════════════ */
+async function submit(){
+  if(!fullValidate()) return; // ★ 全局防線
+
+  document.getElementById('submitOverlay').classList.add('show');
+  try{
+    const no    = document.getElementById('contractNo').textContent;
+    const name  = document.getElementById('studentName').value;
+    const course= document.getElementById('courseType').value;
+    const now   = new Date().toLocaleString('zh-TW');
+    const birth = document.getElementById('studentBirth').value;
+    const phone = document.getElementById('studentPhone').value;
+    const email = document.getElementById('studentEmail').value;
+
+    const payload = {
+      action:          'submitContract',
+      contractNo:       no,
+      name, course, phone, email,
+      birthDate:        birth,
+      time:             now,
+      lineUid:          liffProfile?.userId       || 'unknown',
+      lineDisplayName:  liffProfile?.displayName  || '—',
+      guardianName:     document.getElementById('gN').value || '',
+      guardianPhone:    document.getElementById('gP').value || '',
+      guardianEmail:    document.getElementById('gE').value || '',
+      note: ''
+    };
+
+    // Success screen 資料
+    document.getElementById('sNo').textContent = no;
+    document.getElementById('sN').textContent  = name;
+    document.getElementById('sC').textContent  = course;
+    document.getElementById('sT').textContent  = now;
+
+    document.getElementById('submitOverlay').classList.remove('show');
+
+    // ★ 隱藏所有導覽 UI
+    document.getElementById('mainContent').style.display  = 'none';
+    document.getElementById('footer').style.display       = 'none';
+    document.getElementById('mainTabs').style.display     = 'none';
+    document.getElementById('progressWrap').style.display = 'none';
+    document.getElementById('successScreen').style.display = 'flex';
+
+    const badge=document.getElementById('headerBadge');
+    badge.textContent='簽署完成 ✓';
+    badge.style.background='rgba(76,175,80,0.12)';
+    badge.style.borderColor='rgba(76,175,80,0.3)';
+    badge.style.color='#4CAF50';
+
+    window.scrollTo({top:0,behavior:'smooth'});
+
+    // 非同步：LINE 訊息 + GAS
+    sendLineMsg(payload);
+    fetch(GAS_URL,{
+      method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    }).catch(e=>console.log('GAS error',e));
+
+  }catch(err){
+    document.getElementById('submitOverlay').classList.remove('show');
+    showAlert('提交失敗，請稍後再試或聯繫 KAYON STUDIO');
+  }
+}
+
+initLIFF();
+</script>
+</body>
+</html>
