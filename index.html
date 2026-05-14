@@ -35,6 +35,54 @@
       background: url('./plan.webp') center center / cover no-repeat;
     }
 
+    .cta-button {
+      position: absolute;
+      bottom: 8%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 40px;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 2px solid #C9A84C;
+      border-radius: 8px;
+      text-decoration: none;
+      color: white;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      cursor: pointer;
+    }
+
+    .cta-button:hover {
+      background: rgba(0, 0, 0, 0.8);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(201, 168, 76, 0.3);
+    }
+
+    .cta-title {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+    }
+
+    .cta-title::before {
+      content: '▶';
+      font-size: 14px;
+      margin-right: 12px;
+      color: #C9A84C;
+    }
+
+    .cta-subtitle {
+      font-size: 13px;
+      letter-spacing: 1px;
+      opacity: 0.9;
+    }
+
     /* 手機版背景圖調整 */
     @media (max-width: 768px) {
       .container {
@@ -46,6 +94,10 @@
 <body>
 
   <div class="container">
+    <a href="https://www.pro360.com.tw/shop/item/41524" class="cta-button">
+      <div class="cta-title">DEFINE YOUR SOUND</div>
+      <div class="cta-subtitle">你的聲音 值得被世界記住</div>
+    </a>
   </div>
 
 </body>
