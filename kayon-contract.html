@@ -1,126 +1,1399 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KAYON STUDIO - DEFINE YOUR SOUND</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>KAYON STUDIO｜線上課程電子合約</title>
+<meta name="description" content="KAYON STUDIO KARBØN × GAIA ENTERTAINMENT 線上課程電子合約簽署系統">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+--gold:#C9A84C;
+--gold-light:#E8C96A;
+--gold-dim:#8B6E2E;
+--gold-glow:rgba(201,168,76,0.15);
+--bg:#0A0A0A;
+--bg2:#111111;
+--bg3:#181818;
+--bg4:#222222;
+--border:#252525;
+--border-gold:rgba(201,168,76,0.22);
+--text:#F0EDE6;
+--text2:#888;
+--text3:#444;
+--radius:14px;
+--radius-sm:9px;
+--transition:0.25s cubic-bezier(0.4,0,0.2,1);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.app{max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;position:relative}
 
-    html,
-    body {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      overflow-x: hidden;
-      font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
-      background: #000;
-      color: white;
-    }
+/* ─── HEADER ─── */
+.header{
+padding:18px 20px 14px;
+border-bottom:1px solid var(--border);
+background:rgba(10,10,10,0.95);
+backdrop-filter:blur(12px);
+-webkit-backdrop-filter:blur(12px);
+position:sticky;top:0;z-index:200;
+}
+.header-row{display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-mark{
+width:32px;height:32px;background:var(--gold);border-radius:7px;
+display:flex;align-items:center;justify-content:center;
+font-size:11px;font-weight:600;color:#000;letter-spacing:0.5px;
+flex-shrink:0;
+}
+.logo-name{font-size:13px;font-weight:500;color:var(--text);letter-spacing:0.4px}
+.logo-sub{font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-top:1px}
+.status-pill{
+background:rgba(201,168,76,0.1);border:1px solid var(--border-gold);
+color:var(--gold);font-size:10px;padding:4px 10px;border-radius:20px;
+letter-spacing:0.6px;white-space:nowrap;
+transition:var(--transition);
+}
 
-    .container {
-      position: relative;
-      width: 100%;
-      max-width: 100%;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: url('./newplan.webp') center center / cover no-repeat;
-    }
+/* ─── PROGRESS ─── */
+.progress-wrap{padding:16px 20px 4px;background:var(--bg)}
+.steps{display:flex;align-items:center}
+.step{display:flex;align-items:center;flex:1}
+.step:last-child{flex:0}
+.step-dot{
+width:26px;height:26px;border-radius:50%;
+border:1.5px solid var(--border);
+display:flex;align-items:center;justify-content:center;
+font-size:10px;font-weight:500;color:var(--text3);
+background:var(--bg2);flex-shrink:0;
+transition:var(--transition);
+}
+.step-line{flex:1;height:1px;background:var(--border);transition:var(--transition)}
+.step.active .step-dot{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.08)}
+.step.done .step-dot{border-color:var(--gold);background:var(--gold);color:#000;font-weight:600}
+.step.done .step-line,.step.active .step-line{background:var(--gold-dim)}
+.step-labels{display:flex;justify-content:space-between;margin-top:8px;padding-bottom:4px}
+.step-label{font-size:9px;color:var(--text3);text-align:center;flex:1;letter-spacing:0.3px;transition:var(--transition)}
+.step-label:last-child{text-align:right}
+.step-label:first-child{text-align:left}
+.step-label.active{color:var(--gold)}
+.step-label.done{color:var(--gold-dim)}
 
-    /* 強化黑色透明玻璃感與金色邊框的 CTA */
-    .cta-button {
-      position: absolute;
-      bottom: 5%;
-      left: 5%; /* 移至左下角 */
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 15px 50px;
-      background: rgba(0, 0, 0, 0.4); /* 調整透明度增加玻璃感 */
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1.5px solid #D4AF37; /* 使用更亮一點的金色 */
-      border-radius: 4px; /* 圖片中看起來較為方正，稍微圓角即可 */
-      text-decoration: none;
-      color: #FFFFFF;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(212, 175, 55, 0.1);
-      cursor: pointer;
-      z-index: 10;
-    }
+/* ─── TABS ─── */
+.tabs-wrap{
+background:var(--bg);
+border-bottom:1px solid var(--border);
+padding:10px 20px 0;
+overflow-x:auto;scrollbar-width:none;
+display:flex;gap:6px;
+-webkit-overflow-scrolling:touch;
+}
+.tabs-wrap::-webkit-scrollbar{display:none}
+.tab{
+padding:7px 16px;border-radius:20px;font-size:11px;font-weight:500;
+white-space:nowrap;cursor:pointer;
+border:1px solid var(--border);color:var(--text2);
+background:transparent;transition:var(--transition);
+letter-spacing:0.4px;margin-bottom:10px;
+}
+.tab.active{background:var(--gold);color:#000;border-color:var(--gold)}
+.tab:hover:not(.active){border-color:var(--border-gold);color:var(--text)}
 
-    .cta-button:hover {
-      background: rgba(0, 0, 0, 0.7);
-      border-color: #F9E29C; /* 懸停時邊框更亮 */
-      box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
-      transform: scale(1.02);
-    }
+/* ─── CONTENT ─── */
+.content{flex:1;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch}
 
-    .cta-title {
-      font-size: 24px;
-      font-weight: 500;
-      letter-spacing: 4px;
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      color: #F0EDE6;
-    }
+/* ─── PAGE TRANSITIONS ─── */
+.page{display:none;animation:fadeIn 0.3s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
-    /* 金色播放小箭頭 */
-    .cta-title::before {
-      content: '';
-      width: 0;
-      height: 0;
-      border-top: 8px solid transparent;
-      border-bottom: 8px solid transparent;
-      border-left: 12px solid #D4AF37;
-      margin-right: 15px;
-    }
+/* ─── SECTION HEADERS ─── */
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.section-icon{
+width:32px;height:32px;border-radius:8px;
+background:rgba(201,168,76,0.08);border:1px solid var(--border-gold);
+display:flex;align-items:center;justify-content:center;
+font-size:15px;flex-shrink:0;
+}
+.section-num{font-size:9px;color:var(--gold);font-family:'DM Mono',monospace;letter-spacing:1.5px;text-transform:uppercase}
+.section-title{font-size:14px;font-weight:500;color:var(--text);letter-spacing:0.3px;margin-top:1px}
 
-    .cta-subtitle {
-      font-size: 14px;
-      letter-spacing: 3px;
-      color: #F0EDE6;
-      opacity: 0.8;
-    }
+/* ─── INFO CARD ─── */
+.info-card{
+background:var(--bg2);border:1px solid var(--border);
+border-radius:var(--radius);padding:16px;margin-bottom:16px;
+position:relative;overflow:hidden;
+}
+.info-card::before{
+content:'';position:absolute;top:0;left:0;right:0;height:2px;
+background:linear-gradient(90deg,var(--gold) 0%,transparent 100%);
+}
+.info-row{
+display:flex;justify-content:space-between;align-items:center;
+padding:9px 0;border-bottom:1px solid var(--border);
+}
+.info-row:last-child{border-bottom:none;padding-bottom:0}
+.info-row:first-child{padding-top:0}
+.info-key{font-size:12px;color:var(--text2)}
+.info-val{font-size:12px;color:var(--text);text-align:right}
+.info-val.gold{color:var(--gold);font-weight:500}
+.info-val.mono{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.5px}
 
-    /* 響應式調整 */
-    @media (max-width: 768px) {
-      .container {
-        background-position: center center;
-      }
-      .cta-button {
-        padding: 10px 30px;
-        bottom: 15%;
-      }
-      .cta-title {
-        font-size: 18px;
-        letter-spacing: 2px;
-      }
-      .cta-subtitle {
-        font-size: 12px;
-      }
-    }
-  </style>
+/* ─── FORM FIELDS ─── */
+.field{margin-bottom:14px}
+.field-label{
+font-size:11px;color:var(--text2);letter-spacing:0.6px;
+margin-bottom:7px;display:flex;align-items:center;gap:4px;
+text-transform:uppercase;
+}
+.req{color:var(--gold);font-size:10px}
+.field input,.field select,.field textarea{
+width:100%;background:var(--bg3);
+border:1px solid var(--border);border-radius:var(--radius-sm);
+padding:11px 14px;font-size:13px;color:var(--text);
+font-family:'DM Sans',sans-serif;outline:none;
+transition:border-color var(--transition);
+-webkit-appearance:none;appearance:none;
+resize:none;
+}
+.field input:focus,.field select:focus,.field textarea:focus{
+border-color:var(--gold-dim);background:rgba(201,168,76,0.03);
+}
+.field input::placeholder,.field textarea::placeholder{color:var(--text3)}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23555' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+.field select option{background:var(--bg3);color:var(--text)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field input[readonly]{color:var(--gold);cursor:default}
+
+/* ─── CLAUSE BLOCKS ─── */
+.clause{
+background:var(--bg3);border-radius:var(--radius-sm);
+border:1px solid var(--border);padding:14px;margin-bottom:10px;
+}
+.clause-title{
+font-size:11px;color:var(--gold);font-weight:500;
+letter-spacing:0.6px;margin-bottom:8px;
+display:flex;align-items:center;gap:6px;
+text-transform:uppercase;font-family:'DM Mono',monospace;
+}
+.clause-body{font-size:12px;color:var(--text2);line-height:1.75}
+.clause-body li{list-style:none;padding:2px 0;display:flex;gap:8px}
+.clause-body li::before{content:'—';color:var(--text3);flex-shrink:0}
+
+/* ─── NOTICE BLOCKS ─── */
+.notice{
+background:rgba(201,168,76,0.05);
+border:1px solid var(--border-gold);
+border-radius:var(--radius-sm);padding:14px;margin-bottom:10px;
+}
+.notice-title{font-size:11px;color:var(--gold);font-weight:500;margin-bottom:7px;letter-spacing:0.4px}
+.notice-body{font-size:12px;color:rgba(240,237,230,0.6);line-height:1.75}
+
+/* ─── MINOR BANNER ─── */
+.minor-banner{
+background:rgba(201,168,76,0.06);border:1px solid var(--border-gold);
+border-radius:var(--radius-sm);padding:11px 14px;margin-bottom:16px;
+font-size:12px;color:var(--gold);display:flex;align-items:flex-start;gap:8px;
+}
+
+/* ─── CHECK ITEMS ─── */
+.check-item{
+display:flex;align-items:flex-start;gap:10px;
+padding:10px 0;cursor:pointer;
+border-bottom:1px solid var(--border);
+}
+.check-item:last-child{border-bottom:none}
+.check-box{
+width:20px;height:20px;border:1.5px solid var(--border);
+border-radius:5px;flex-shrink:0;
+display:flex;align-items:center;justify-content:center;
+margin-top:1px;transition:all var(--transition);background:var(--bg3);
+}
+.check-box.checked{background:var(--gold);border-color:var(--gold)}
+.check-box.checked::after{content:'✓';font-size:11px;color:#000;font-weight:700}
+.check-text{font-size:12px;color:var(--text2);line-height:1.65}
+.check-text em{color:var(--gold);font-style:normal;font-weight:500}
+
+/* ─── SIGNATURE ─── */
+.sig-type-tabs{display:flex;gap:8px;margin-bottom:12px}
+.sig-type-tab{
+padding:7px 18px;border-radius:20px;font-size:11px;cursor:pointer;
+border:1px solid var(--border);color:var(--text2);background:transparent;
+transition:all var(--transition);letter-spacing:0.4px;
+}
+.sig-type-tab.active{
+background:rgba(201,168,76,0.1);border-color:var(--border-gold);color:var(--gold);
+}
+.canvas-wrap{
+background:var(--bg3);border:1px dashed rgba(201,168,76,0.3);
+border-radius:var(--radius-sm);height:130px;
+display:flex;align-items:center;justify-content:center;
+cursor:crosshair;position:relative;overflow:hidden;
+touch-action:none;
+}
+.canvas-wrap canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+.canvas-hint{font-size:12px;color:var(--text3);pointer-events:none;user-select:none}
+.sig-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+.sig-clear{
+background:transparent;border:1px solid var(--border);
+border-radius:6px;padding:5px 12px;font-size:11px;
+color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;
+transition:all var(--transition);letter-spacing:0.3px;
+}
+.sig-clear:hover{border-color:var(--gold-dim);color:var(--gold)}
+.sig-timestamp{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace}
+
+/* ─── UPLOAD ─── */
+.upload-zone{
+border:1px dashed var(--border);border-radius:var(--radius-sm);
+padding:22px 16px;text-align:center;cursor:pointer;
+transition:all var(--transition);margin-bottom:10px;background:var(--bg3);
+}
+.upload-zone:hover,.upload-zone.drag{
+border-color:var(--gold-dim);background:rgba(201,168,76,0.03);
+}
+.upload-icon{font-size:26px;margin-bottom:7px}
+.upload-label{font-size:13px;color:var(--text2);margin-bottom:3px;font-weight:500}
+.upload-sub{font-size:10px;color:var(--text3);letter-spacing:0.3px}
+.file-list{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.file-item{
+background:var(--bg3);border:1px solid var(--border);
+border-radius:var(--radius-sm);padding:10px 12px;
+display:flex;align-items:center;gap:10px;
+}
+.file-ico{font-size:18px}
+.file-info{flex:1;min-width:0}
+.file-name{font-size:12px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-size{font-size:10px;color:var(--text3);margin-top:1px}
+.file-rm{
+width:22px;height:22px;border-radius:50%;
+background:var(--bg4);border:1px solid var(--border);
+color:var(--text3);font-size:12px;cursor:pointer;
+display:flex;align-items:center;justify-content:center;
+flex-shrink:0;transition:all var(--transition);
+}
+.file-rm:hover{border-color:#c0392b;color:#c0392b}
+
+/* ─── DIVIDER ─── */
+.divider{height:1px;background:var(--border);margin:18px 0}
+
+/* ─── FOOTER ─── */
+.footer{
+padding:16px 20px;border-top:1px solid var(--border);
+background:rgba(10,10,10,0.95);backdrop-filter:blur(12px);
+-webkit-backdrop-filter:blur(12px);
+position:sticky;bottom:0;z-index:100;
+}
+.btn-primary{
+width:100%;padding:15px;background:var(--gold);color:#000;
+border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:600;
+cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:0.4px;
+transition:all var(--transition);display:flex;align-items:center;
+justify-content:center;gap:8px;
+}
+.btn-primary:hover{background:var(--gold-light);transform:translateY(-1px)}
+.btn-primary:active{transform:scale(0.99)}
+.btn-secondary{
+width:100%;padding:12px;background:transparent;color:var(--text2);
+border:1px solid var(--border);border-radius:var(--radius-sm);
+font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;
+margin-top:8px;transition:all var(--transition);letter-spacing:0.3px;
+}
+.btn-secondary:hover{border-color:var(--border-gold);color:var(--gold)}
+.footer-note{
+text-align:center;font-size:10px;color:var(--text3);
+margin-top:10px;display:flex;align-items:center;
+justify-content:center;gap:5px;letter-spacing:0.3px;
+}
+
+/* ─── SUCCESS ─── */
+/* FIX: 移除 min-height 讓 scroll 自然展開；移除 justify-content:center 避免按鈕被推到 viewport 外 */
+.success-screen{
+display:none;flex-direction:column;align-items:center;
+padding:36px 24px 40px;text-align:center;
+/* footer 已隱藏，不需要額外 padding-bottom */
+}
+.success-ring{
+width:72px;height:72px;border-radius:50%;
+background:rgba(201,168,76,0.12);border:2px solid var(--gold);
+display:flex;align-items:center;justify-content:center;
+font-size:30px;margin-bottom:22px;flex-shrink:0;
+animation:ringPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes ringPop{
+from{transform:scale(0.4);opacity:0}
+to{transform:scale(1);opacity:1}
+}
+.success-title{font-size:22px;font-weight:500;color:var(--text);margin-bottom:8px;letter-spacing:-0.3px}
+.success-sub{font-size:13px;color:var(--text2);margin-bottom:26px;line-height:1.75;max-width:320px}
+.success-card{
+background:var(--bg2);border:1px solid var(--border);
+border-radius:var(--radius);padding:16px;width:100%;
+margin-bottom:20px;text-align:left;position:relative;overflow:hidden;
+}
+.success-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent)}
+.meta-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px}
+.meta-row:last-child{border-bottom:none;padding-bottom:0}
+.meta-key{color:var(--text2)}
+.meta-val{color:var(--text);font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.3px}
+.meta-val.ok{color:#4CAF50}
+
+/* ─── SUCCESS CTA AREA ─── */
+.success-cta-area{width:100%;display:flex;flex-direction:column;gap:0}
+
+/* 一條龍流程說明卡 */
+.funnel-steps-card{
+background:rgba(201,168,76,0.05);
+border:1px solid var(--border-gold);
+border-radius:var(--radius-sm);
+padding:14px 16px;width:100%;margin-bottom:16px;text-align:left;
+}
+.funnel-steps-label{
+font-size:9px;color:var(--gold);letter-spacing:1.5px;
+font-family:'DM Mono',monospace;margin-bottom:12px;
+text-transform:uppercase;
+}
+.funnel-step-row{
+display:flex;gap:12px;font-size:12px;color:var(--text2);
+align-items:flex-start;padding:5px 0;
+border-bottom:1px solid rgba(37,37,37,0.6);
+}
+.funnel-step-row:last-child{border-bottom:none}
+.funnel-num{
+color:var(--gold);font-weight:600;flex-shrink:0;
+font-family:'DM Mono',monospace;font-size:11px;
+min-width:18px;padding-top:1px;
+}
+.funnel-step-txt{line-height:1.55}
+.funnel-step-txt span{color:var(--text);font-weight:500}
+.funnel-arrow{color:var(--text3);margin:0 4px;font-size:10px}
+
+/* ─── LOADING OVERLAY ─── */
+.loading-overlay{
+display:none;position:fixed;inset:0;z-index:9998;
+background:rgba(10,10,10,0.85);backdrop-filter:blur(8px);
+-webkit-backdrop-filter:blur(8px);
+flex-direction:column;align-items:center;justify-content:center;gap:16px;
+}
+.loading-overlay.show{display:flex}
+.loading-spinner{
+width:40px;height:40px;border:2px solid var(--border);
+border-top-color:var(--gold);border-radius:50%;
+animation:spin 0.8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:13px;color:var(--text2);letter-spacing:0.4px}
+</style>
 </head>
 <body>
+<div class="app">
 
-  <div class="container">
-    <!-- 串連 Pro360 網址的 CTA -->
-    <a href="https://www.pro360.com.tw/shop/item/41524" class="cta-button" target="_blank">
-      <div class="cta-title">DEFINE YOUR SOUND</div>
-      <div class="cta-subtitle">你的聲音 值得被世界記住</div>
-    </a>
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text" id="loadingText">提交中，請稍候…</div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-row">
+    <div class="logo">
+      <div class="logo-mark">KS</div>
+      <div>
+        <div class="logo-name">KAYON STUDIO</div>
+        <div class="logo-sub">KARBØN × GAIA ENTERTAINMENT</div>
+      </div>
+    </div>
+    <div class="status-pill" id="headerBadge">課程合約</div>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrap" id="progressWrap">
+  <div class="steps" id="progressSteps">
+    <div class="step active" id="s1"><div class="step-dot">1</div><div class="step-line"></div></div>
+    <div class="step" id="s2"><div class="step-dot">2</div><div class="step-line"></div></div>
+    <div class="step" id="s3"><div class="step-dot">3</div><div class="step-line"></div></div>
+    <div class="step" id="s4"><div class="step-dot" style="border-right:none">4</div></div>
+  </div>
+  <div class="step-labels">
+    <div class="step-label active" id="sl1">學員資料</div>
+    <div class="step-label" id="sl2">課程合約</div>
+    <div class="step-label" id="sl3">法代同意</div>
+    <div class="step-label" id="sl4">簽署完成</div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrap" id="mainTabs">
+  <div class="tab active" onclick="switchSection('info')">學員資料</div>
+  <div class="tab" onclick="switchSection('contract')">課程合約</div>
+  <div class="tab" onclick="switchSection('guardian')">法代同意書</div>
+  <div class="tab" onclick="switchSection('sign')">電子簽名</div>
+  <div class="tab" onclick="switchSection('upload')">附件上傳</div>
+</div>
+
+<!-- CONTENT -->
+<div class="content" id="mainContent">
+
+  <!-- PAGE: 學員資料 -->
+  <div class="page active" id="page-info">
+    <div class="section-header">
+      <div class="section-icon">👤</div>
+      <div>
+        <div class="section-num">01 — STUDENT INFO</div>
+        <div class="section-title">學員基本資料</div>
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="info-row"><span class="info-key">課程類型</span><span class="info-val gold">線上音樂創作課程</span></div>
+      <div class="info-row"><span class="info-key">合約編號</span><span class="info-val mono" id="contractNo">—</span></div>
+      <div class="info-row"><span class="info-key">簽署日期</span><span class="info-val mono" id="signDate">—</span></div>
+    </div>
+    <div class="field">
+      <div class="field-label">學員姓名 <span class="req">*</span></div>
+      <input type="text" placeholder="請輸入真實姓名" id="studentName" oninput="syncInfo()">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <div class="field-label">出生日期 <span class="req">*</span></div>
+        <input type="date" id="studentBirth" onchange="calcAge()">
+      </div>
+      <div class="field">
+        <div class="field-label">年齡</div>
+        <input type="text" id="studentAge" placeholder="自動計算" readonly>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">聯絡電話 <span class="req">*</span></div>
+      <input type="tel" placeholder="0900-000-000" id="studentPhone">
+    </div>
+    <div class="field">
+      <div class="field-label">電子信箱 <span class="req">*</span></div>
+      <input type="email" placeholder="email@example.com" id="studentEmail">
+    </div>
+    <div class="field">
+      <div class="field-label">LINE ID</div>
+      <input type="text" placeholder="LINE ID（選填）" id="studentLine">
+    </div>
+    <div class="field">
+      <div class="field-label">課程方案 <span class="req">*</span></div>
+      <select id="courseType" onchange="syncInfo();updatePro360Link()">
+        <option value="">— 請選擇課程方案 —</option>
+        <option value="創作啟航計畫 × 4｜$4,000" data-url="https://www.pro360.com.tw/shop/item/41507">🎵 創作啟航計畫 × 4堂｜$4,000</option>
+        <option value="創作啟航計畫 × 8+1｜$8,000" data-url="https://www.pro360.com.tw/shop/item/41507">🎵 創作啟航計畫 × 8+1堂｜$8,000</option>
+        <option value="聲音啟航計畫 × 4｜$4,200" data-url="https://www.pro360.com.tw/shop/item/41205">🎙 聲音啟航計畫 × 4堂｜$4,200</option>
+        <option value="聲音啟航計畫 × 8+1｜$8,000" data-url="https://www.pro360.com.tw/shop/item/41205">🎙 聲音啟航計畫 × 8+1堂｜$8,000</option>
+      </select>
+    </div>
+    <div id="minorNotice" style="display:none">
+      <div class="minor-banner">⚠️ 偵測到未滿18歲，需填寫法定代理人同意書（第三步驟）</div>
+    </div>
   </div>
 
+  <!-- PAGE: 課程合約 -->
+  <div class="page" id="page-contract">
+    <div class="section-header">
+      <div class="section-icon">📋</div>
+      <div>
+        <div class="section-num">02 — CONTRACT</div>
+        <div class="section-title">線上課程合約書</div>
+      </div>
+    </div>
+    <div class="clause">
+      <div class="clause-title">§1 付款規範</div>
+      <ul class="clause-body">
+        <li>課程方案與付款方式依雙方書面確認內容為準</li>
+        <li>優惠方案不得同時並行，以最後確認方案為準</li>
+        <li>完成付款後始完成課程預約，未付款前名額不予保留</li>
+        <li>付款確認後系統自動發送確認通知至學員電子信箱</li>
+      </ul>
+    </div>
+    <div class="clause">
+      <div class="clause-title">§2 課程進行規範</div>
+      <ul class="clause-body">
+        <li>使用 Google Meet 進行線上一對一授課</li>
+        <li>課程時間以 Google Calendar 排程為準，雙方須事先確認</li>
+        <li>遲到超過10分鐘視同缺席，該堂課計為已消耗</li>
+        <li>課程不得自行錄音或錄影，違者終止合約且不予退費</li>
+        <li>講師將提供課程講義及相關數位教材供學員使用</li>
+        <li>上課前請確認網路穩定，建議使用有線網路或 5G</li>
+      </ul>
+    </div>
+    <div class="clause">
+      <div class="clause-title">§3 改期與取消規定</div>
+      <ul class="clause-body">
+        <li>改期申請須透過 LINE 官方系統提前24小時完成操作</li>
+        <li>課程堂數與紀錄由系統自動管理，不接受人工調整</li>
+        <li>當月未使用堂數不累積至下月，逾期視同自動放棄</li>
+        <li>課程開始後不提供退款，轉讓須提前書面告知講師</li>
+        <li>講師因故取消課程，全額補回堂數或協議退費</li>
+      </ul>
+    </div>
+    <div class="clause">
+      <div class="clause-title">§4 智慧財產權</div>
+      <ul class="clause-body">
+        <li>課程內容、教材、教學方法屬 KAYON STUDIO 智慧財產</li>
+        <li>未經書面授權不得外流、轉載、販售任何課程相關內容</li>
+        <li>學員課程中創作之作品，著作權歸學員本人所有</li>
+        <li>學員同意 KAYON STUDIO 以匿名形式於作品集引用學員作品</li>
+      </ul>
+    </div>
+    <div class="clause">
+      <div class="clause-title">§5 系統功能說明</div>
+      <ul class="clause-body">
+        <li>LINE 官方帳號：課程預約、改期申請、即時通知推播</li>
+        <li>Google Calendar：課程行事曆自動同步與提醒</li>
+        <li>堂數管理系統：自動計算、紀錄每堂課程狀態</li>
+        <li>學員資料依《個資法》保護，不對第三方揭露或販售</li>
+      </ul>
+    </div>
+    <div class="notice">
+      <div class="notice-title">📌 上課注意事項</div>
+      <div class="notice-body">
+        上課前請確認麥克風、視訊設備正常。建議使用耳機以確保音質，避免回音干擾。若遭遇技術問題，請立即透過 LINE 聯繫講師，技術問題不計入缺席次數，但需在5分鐘內通報。課程期間請保持安靜環境，關閉通知音效。
+      </div>
+    </div>
+    <div class="notice">
+      <div class="notice-title">⚖️ 電子合約法律效力聲明</div>
+      <div class="notice-body">
+        本合約經電子簽署後，依據中華民國《電子簽章法》第4條，具備與紙本合約相同之完整法律效力。簽署時間戳記由系統自動記錄並存證，作為合約成立時間之證明。
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: 法代同意書 -->
+  <div class="page" id="page-guardian">
+    <div class="section-header">
+      <div class="section-icon">👨‍👩‍👧</div>
+      <div>
+        <div class="section-num">03 — GUARDIAN CONSENT</div>
+        <div class="section-title">法定代理人同意書</div>
+      </div>
+    </div>
+    <div class="minor-banner">📋 本同意書適用於未滿18歲學員，成年學員可直接跳至下一步</div>
+    <div class="info-card">
+      <div class="clause-title" style="margin-bottom:10px">未成年學員資訊確認</div>
+      <div class="info-row"><span class="info-key">學員姓名</span><span class="info-val" id="g_name">—</span></div>
+      <div class="info-row"><span class="info-key">出生日期</span><span class="info-val" id="g_birth">—</span></div>
+      <div class="info-row"><span class="info-key">課程方案</span><span class="info-val" id="g_course">—</span></div>
+    </div>
+    <div class="field">
+      <div class="field-label">法定代理人姓名 <span class="req">*</span></div>
+      <input type="text" placeholder="請輸入法定代理人真實姓名" id="guardianName">
+    </div>
+    <div class="field">
+      <div class="field-label">與學員關係 <span class="req">*</span></div>
+      <select id="guardianRel">
+        <option value="">— 請選擇關係 —</option>
+        <option>父親</option><option>母親</option>
+        <option>監護人</option><option>其他法定代理人</option>
+      </select>
+    </div>
+    <div class="field">
+      <div class="field-label">聯絡電話（主） <span class="req">*</span></div>
+      <input type="tel" placeholder="0900-000-000（主要聯絡）" id="guardianPhone">
+    </div>
+    <div class="field">
+      <div class="field-label">聯絡電話（備用）</div>
+      <input type="tel" placeholder="0900-000-000（備用，選填）" id="guardianPhone2">
+    </div>
+    <div class="field">
+      <div class="field-label">電子信箱 <span class="req">*</span></div>
+      <input type="email" placeholder="法定代理人電子信箱" id="guardianEmail">
+    </div>
+    <div class="divider"></div>
+    <div class="section-header" style="margin-bottom:12px">
+      <div class="section-icon">🪪</div>
+      <div>
+        <div class="section-num">身份驗證文件</div>
+        <div class="section-title">法定代理人身份證明</div>
+      </div>
+    </div>
+    <div class="notice" style="margin-bottom:12px">
+      <div class="notice-title">📌 為何需要上傳身份證明？</div>
+      <div class="notice-body">為確認法定代理人身份真實性，確保同意書具備完整法律效力，請上傳以下任一文件，系統將依個資法加密保存。</div>
+    </div>
+    <div class="field">
+      <div class="field-label">身份證明文件 <span class="req">*</span><span style="color:var(--text3);font-size:10px;font-weight:400;text-transform:none;letter-spacing:0">（二擇一）</span></div>
+      <div class="upload-zone" id="guardianIdZone" onclick="triggerGuardianUpload('id')" ondragover="onGuardianDragOver(event,'id')" ondragleave="onGuardianDragLeave('id')" ondrop="onGuardianDrop(event,'id')">
+        <div class="upload-icon">🪪</div>
+        <div class="upload-label">國民身份證（正反面）</div>
+        <div class="upload-sub">JPG、PNG、PDF，限 10MB · 請遮蓋後8碼</div>
+      </div>
+      <div class="file-list" id="guardianIdFiles"></div>
+    </div>
+    <div style="text-align:center;font-size:12px;color:var(--text3);margin:-4px 0 10px;letter-spacing:0.5px">或</div>
+    <div class="field">
+      <div class="upload-zone" id="guardianHouseholdZone" onclick="triggerGuardianUpload('household')" ondragover="onGuardianDragOver(event,'household')" ondragleave="onGuardianDragLeave('household')" ondrop="onGuardianDrop(event,'household')">
+        <div class="upload-icon">📒</div>
+        <div class="upload-label">戶口名簿（含學員頁）</div>
+        <div class="upload-sub">JPG、PNG、PDF，限 10MB · 確認親屬關係</div>
+      </div>
+      <div class="file-list" id="guardianHouseholdFiles"></div>
+    </div>
+    <input type="file" id="guardianFileInput" style="display:none" accept="image/*,.pdf">
+    <div class="divider"></div>
+    <div class="section-header" style="margin-bottom:10px">
+      <div class="section-icon" style="font-size:13px">✅</div>
+      <div><div class="section-title">同意事項</div></div>
+    </div>
+    <div id="guardianChecks">
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <div class="check-text">本人同意<em>未成年學員</em>參與 KAYON STUDIO 線上音樂創作課程</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <div class="check-text">本人已閱讀並充分理解課程合約書所有條款及<em>上課規範</em></div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <div class="check-text">本人同意電子簽署具備<em>完整法律效力</em>，與紙本簽名效力相同</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <div class="check-text">本人同意 KAYON STUDIO 依<em>個資法</em>規定蒐集、處理及利用相關個人資料</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <div class="check-text">本人承諾上述資料真實正確，如有不實願負法律責任</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: 電子簽名 -->
+  <div class="page" id="page-sign">
+    <div class="section-header">
+      <div class="section-icon">✍️</div>
+      <div>
+        <div class="section-num">04 — E-SIGNATURE</div>
+        <div class="section-title">電子簽名</div>
+      </div>
+    </div>
+    <div class="notice" style="margin-bottom:16px">
+      <div class="notice-body">本人已詳細閱讀上述課程合約書所有條款，充分理解並同意遵守各項規定。本電子簽名依《電子簽章法》具備完整法律效力。</div>
+    </div>
+    <div style="margin-bottom:18px">
+      <div class="field-label" style="margin-bottom:10px">學員簽名 <span class="req">*</span></div>
+      <div class="sig-type-tabs">
+        <div class="sig-type-tab active" onclick="switchSigMode('draw',this.parentNode,0)">手寫簽名</div>
+        <div class="sig-type-tab" onclick="switchSigMode('type',this.parentNode,0)">打字簽名</div>
+      </div>
+      <div id="drawPanel0">
+        <div class="canvas-wrap" id="wrap0">
+          <canvas id="canvas0"></canvas>
+          <div class="canvas-hint" id="hint0">用手指或滑鼠在此簽名</div>
+        </div>
+        <div class="sig-row">
+          <button class="sig-clear" onclick="clearCanvas(0)">清除重簽</button>
+          <div class="sig-timestamp" id="ts0">尚未簽署</div>
+        </div>
+      </div>
+      <div id="typePanel0" style="display:none">
+        <div class="field"><input type="text" id="typedSig0" placeholder="輸入姓名作為電子簽名" style="font-size:20px;font-family:'DM Mono',monospace;color:var(--gold);letter-spacing:3px;text-align:center"></div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div id="guardianSigBlock">
+      <div class="field-label" style="margin-bottom:10px">法定代理人簽名 <span style="font-size:10px;color:var(--text3)">（未成年學員適用）</span></div>
+      <div class="canvas-wrap" id="wrap1" style="height:100px">
+        <canvas id="canvas1"></canvas>
+        <div class="canvas-hint" id="hint1">法定代理人在此簽名</div>
+      </div>
+      <div class="sig-row">
+        <button class="sig-clear" onclick="clearCanvas(1)">清除重簽</button>
+        <div class="sig-timestamp" id="ts1">尚未簽署</div>
+      </div>
+      <div class="divider"></div>
+    </div>
+    <div id="finalAgreements">
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <div class="check-text">本人已閱讀全部合約內容，同意所有條款，並確認以上填寫資料正確無誤</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <div class="check-text">本人同意 KAYON STUDIO 將合約電子檔案儲存至 Google Drive 及相關管理系統</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <div class="check-text">本人了解電子合約簽署後即具法律約束力，無法單方撤銷</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: 附件上傳 -->
+  <div class="page" id="page-upload">
+    <div class="section-header">
+      <div class="section-icon">📎</div>
+      <div>
+        <div class="section-num">05 — ATTACHMENTS</div>
+        <div class="section-title">附件上傳</div>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">學生證 <span style="color:var(--text3);font-size:10px">（享學生優惠必填）</span></div>
+      <div class="upload-zone" id="zone0" onclick="triggerUpload(0)" ondragover="onDragOver(event,0)" ondragleave="onDragLeave(0)" ondrop="onDrop(event,0)">
+        <div class="upload-icon">🎓</div>
+        <div class="upload-label">點擊或拖曳上傳學生證</div>
+        <div class="upload-sub">JPG、PNG、PDF，限 10MB</div>
+      </div>
+      <div class="file-list" id="files0"></div>
+    </div>
+    <div class="field">
+      <div class="field-label">清寒證明 <span style="color:var(--text3);font-size:10px">（特殊優惠必填）</span></div>
+      <div class="upload-zone" id="zone1" onclick="triggerUpload(1)" ondragover="onDragOver(event,1)" ondragleave="onDragLeave(1)" ondrop="onDrop(event,1)">
+        <div class="upload-icon">📄</div>
+        <div class="upload-label">點擊或拖曳上傳清寒證明</div>
+        <div class="upload-sub">JPG、PNG、PDF，限 10MB</div>
+      </div>
+      <div class="file-list" id="files1"></div>
+    </div>
+    <div class="field">
+      <div class="field-label">其他補充文件 <span style="color:var(--text3);font-size:10px">（選填）</span></div>
+      <div class="upload-zone" id="zone2" onclick="triggerUpload(2)" ondragover="onDragOver(event,2)" ondragleave="onDragLeave(2)" ondrop="onDrop(event,2)">
+        <div class="upload-icon">📁</div>
+        <div class="upload-label">點擊或拖曳上傳其他文件</div>
+        <div class="upload-sub">所有常見格式，限 20MB</div>
+      </div>
+      <div class="file-list" id="files2"></div>
+    </div>
+    <input type="file" id="fileInput" style="display:none" accept="image/*,.pdf,.doc,.docx">
+    <div class="notice">
+      <div class="notice-title">🔒 資料安全說明</div>
+      <div class="notice-body">所有上傳文件以 AES-256 加密儲存於 Google Drive，僅 KAYON STUDIO 授權人員可存取。依《個資法》第11條規定，合約期滿後30天內刪除相關文件。</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       SUCCESS SCREEN
+       FIX: 獨立於 .content 之外，footer 提交後隱藏，
+       CTA 完全可見不被任何 sticky 元素遮擋
+  ═══════════════════════════════════════ -->
+  <div class="success-screen" id="successScreen">
+    <div class="success-ring">✓</div>
+    <div class="success-title">合約簽署完成</div>
+    <div class="success-sub">
+      您的課程合約已成功提交並存檔。<br>
+      確認通知將發送至您的電子信箱及 LINE 帳號。
+    </div>
+
+    <!-- 合約摘要卡 -->
+    <div class="success-card">
+      <div class="meta-row"><span class="meta-key">合約編號</span><span class="meta-val" id="sNo">—</span></div>
+      <div class="meta-row"><span class="meta-key">學員姓名</span><span class="meta-val" id="sName">—</span></div>
+      <div class="meta-row"><span class="meta-key">課程方案</span><span class="meta-val" id="sCourse">—</span></div>
+      <div class="meta-row"><span class="meta-key">簽署時間</span><span class="meta-val" id="sTime">—</span></div>
+      <div class="meta-row"><span class="meta-key">Google Drive</span><span class="meta-val ok">已儲存 ✓</span></div>
+      <div class="meta-row"><span class="meta-key">Email 通知</span><span class="meta-val ok">已發送 ✓</span></div>
+    </div>
+
+    <!-- CTA 區域 — FIX: footer 已隱藏，按鈕完全不被遮擋 -->
+    <div class="success-cta-area">
+
+      <!-- 主 CTA：前往 Pro360 付款（最重要，放最上面最顯眼） -->
+      <button class="btn-primary" id="pro360PayBtn" onclick="goToPro360()" style="margin-bottom:16px">
+        💳 前往 Pro360 完成付款 →
+      </button>
+
+      <!-- 一條龍後續步驟說明 -->
+      <div class="funnel-steps-card">
+        <div class="funnel-steps-label">付款後完整流程</div>
+        <div class="funnel-step-row">
+          <div class="funnel-num">①</div>
+          <div class="funnel-step-txt">
+            <span>Pro360</span> 選擇課程方案
+            <span class="funnel-arrow">→</span>
+            <span>藍新金流</span>線上結帳
+          </div>
+        </div>
+        <div class="funnel-step-row">
+          <div class="funnel-num">②</div>
+          <div class="funnel-step-txt">
+            結帳完成後，系統自動導回
+            <span>LINE 簽署合約</span>
+          </div>
+        </div>
+        <div class="funnel-step-row">
+          <div class="funnel-num">③</div>
+          <div class="funnel-step-txt">
+            合約簽署完成
+            <span class="funnel-arrow">→</span>
+            <span>LINE@ 預約課程時段</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 下載合約 PDF -->
+      <button class="btn-secondary" onclick="exportPDF()" style="margin-top:0">
+        ⬇ 下載合約 PDF
+      </button>
+
+      <!-- 備用：萬一自動跳轉失敗，手動回 LINE -->
+      <button class="btn-secondary" onclick="window.open('https://liff.line.me/2009971827-k0iEMkIu?view=register','_blank')" style="margin-top:8px">
+        💬 直接前往 LINE 官方帳號
+      </button>
+
+    </div><!-- .success-cta-area -->
+  </div><!-- #successScreen -->
+
+</div><!-- .content -->
+
+<!-- FOOTER — FIX: submitContract 後會隱藏此區塊 -->
+<div class="footer" id="mainFooter">
+  <button class="btn-primary" id="nextBtn" onclick="nextStep()">
+    <span id="nextTxt">繼續下一步</span><span>→</span>
+  </button>
+  <button class="btn-secondary" id="prevBtn" onclick="prevStep()" style="display:none">← 上一步</button>
+  <div class="footer-note">🔒 256-bit 加密傳輸 · 符合電子簽章法</div>
+</div>
+
+</div><!-- .app -->
+
+<script>
+/* ═══════════════════════════════════════
+   STATE
+═══════════════════════════════════════ */
+const sections=['info','contract','guardian','sign','upload'];
+let cur=0;
+const uploadFiles=[[],[],[]];
+let activeUpload=0;
+const ctxs=[null,null];
+let drawing=false,lx=0,ly=0,activeCvs=-1;
+const hasSig=[false,false];
+let pro360Url='https://www.pro360.com.tw';
+const guardianFiles={id:[],household:[]};
+let activeGuardianUploadType='id';
+
+/* ═══════════════════════════════════════
+   INIT
+═══════════════════════════════════════ */
+(function init(){
+  const no='KS-'+new Date().getFullYear()+'-'+String(Math.floor(Math.random()*900+100)).padStart(3,'0');
+  document.getElementById('contractNo').textContent=no;
+  document.getElementById('signDate').textContent=new Date().toLocaleDateString('zh-TW');
+  document.getElementById('guardianSigBlock').style.display='none';
+  renderFooter();
+})();
+
+/* ═══════════════════════════════════════
+   AGE CALC
+═══════════════════════════════════════ */
+function calcAge(){
+  const v=document.getElementById('studentBirth').value;
+  if(!v)return;
+  const age=Math.floor((new Date()-new Date(v))/(365.25*24*3600*1000));
+  document.getElementById('studentAge').value=age+' 歲';
+  document.getElementById('minorNotice').style.display=age<18?'block':'none';
+  document.getElementById('guardianSigBlock').style.display=age<18?'block':'none';
+  syncInfo();
+}
+
+function syncInfo(){
+  document.getElementById('g_name').textContent=document.getElementById('studentName').value||'—';
+  document.getElementById('g_birth').textContent=document.getElementById('studentBirth').value||'—';
+  document.getElementById('g_course').textContent=document.getElementById('courseType').value||'—';
+}
+
+/* ═══════════════════════════════════════
+   PRO360 LINK UPDATE
+═══════════════════════════════════════ */
+function updatePro360Link(){
+  const sel=document.getElementById('courseType');
+  const opt=sel.options[sel.selectedIndex];
+  if(opt&&opt.getAttribute('data-url')){
+    pro360Url=opt.getAttribute('data-url');
+  }
+}
+
+/* ═══════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════ */
+function switchSection(s){
+  const idx=sections.indexOf(s);
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+s).classList.add('active');
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  cur=idx;
+  if(s==='sign') setTimeout(initCanvases,50);
+  renderFooter();
+  syncInfo();
+  // 回到頂部
+  document.getElementById('mainContent').scrollTop=0;
+}
+
+/* ═══════════════════════════════════════
+   ALERT BANNER
+═══════════════════════════════════════ */
+function showAlert(msg){
+  let el=document.getElementById('alertBanner');
+  if(!el){
+    el=document.createElement('div');
+    el.id='alertBanner';
+    el.style.cssText='position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:9999;max-width:430px;width:100%;background:#c0392b;color:#fff;padding:12px 20px;font-size:13px;display:flex;align-items:center;gap:8px;animation:slideDown 0.3s ease;border-radius:0 0 10px 10px';
+    document.body.appendChild(el);
+    const style=document.createElement('style');
+    style.textContent='@keyframes slideDown{from{transform:translateX(-50%) translateY(-100%)}to{transform:translateX(-50%) translateY(0)}}';
+    document.head.appendChild(style);
+  }
+  el.innerHTML='⚠️ '+msg;
+  el.style.display='flex';
+  clearTimeout(el._timer);
+  el._timer=setTimeout(()=>el.style.display='none',3500);
+}
+
+/* ═══════════════════════════════════════
+   VALIDATION
+═══════════════════════════════════════ */
+function validateStep(section){
+  if(section==='info'){
+    if(!document.getElementById('studentName').value.trim()){showAlert('請填寫學員姓名');return false;}
+    if(!document.getElementById('studentBirth').value){showAlert('請填寫出生日期');return false;}
+    if(!document.getElementById('studentPhone').value.trim()){showAlert('請填寫聯絡電話');return false;}
+    const email=document.getElementById('studentEmail').value.trim();
+    if(!email){showAlert('請填寫電子信箱');return false;}
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showAlert('電子信箱格式不正確');return false;}
+    if(!document.getElementById('courseType').value){showAlert('請選擇課程方案');return false;}
+  }
+  if(section==='guardian'){
+    const ageVal=document.getElementById('studentAge').value;
+    const age=parseInt(ageVal);
+    if(!isNaN(age)&&age<18){
+      if(!document.getElementById('guardianName').value.trim()){showAlert('請填寫法定代理人姓名');return false;}
+      if(!document.getElementById('guardianRel').value){showAlert('請選擇法定代理人與學員關係');return false;}
+      if(!document.getElementById('guardianPhone').value.trim()){showAlert('請填寫法定代理人聯絡電話');return false;}
+      if(!document.getElementById('guardianEmail').value.trim()){showAlert('請填寫法定代理人電子信箱');return false;}
+      const hasId=guardianFiles.id&&guardianFiles.id.length>0;
+      const hasHh=guardianFiles.household&&guardianFiles.household.length>0;
+      if(!hasId&&!hasHh){showAlert('未成年學員須上傳法定代理人身份證明（身分證或戶口名簿）');return false;}
+      const checks=document.querySelectorAll('#guardianChecks .check-box');
+      const allChecked=[...checks].every(c=>c.classList.contains('checked'));
+      if(!allChecked){showAlert('請勾選所有法定代理人同意事項');return false;}
+    }
+  }
+  if(section==='sign'){
+    // 確認是手寫還是打字模式
+    const drawVisible=document.getElementById('drawPanel0').style.display!=='none';
+    if(drawVisible){
+      const cv=document.getElementById('canvas0');
+      if(cv){
+        const ctx=cv.getContext('2d');
+        const px=ctx.getImageData(0,0,cv.width,cv.height).data;
+        const signed=Array.from(px).some((v,i)=>i%4===3&&v>0);
+        if(!signed){showAlert('請完成學員電子簽名');return false;}
+      }
+    } else {
+      if(!document.getElementById('typedSig0').value.trim()){showAlert('請輸入打字簽名');return false;}
+    }
+    const finalChecks=document.querySelectorAll('#finalAgreements .check-box');
+    const allFinal=[...finalChecks].every(c=>c.classList.contains('checked'));
+    if(!allFinal){showAlert('請勾選所有簽署確認事項');return false;}
+  }
+  return true;
+}
+
+/* ═══════════════════════════════════════
+   STEP NAVIGATION
+═══════════════════════════════════════ */
+function nextStep(){
+  if(!validateStep(sections[cur])) return;
+  if(cur<sections.length-1) switchSection(sections[cur+1]);
+  else submitContract();
+}
+
+function prevStep(){
+  if(cur>0) switchSection(sections[cur-1]);
+}
+
+function renderFooter(){
+  document.getElementById('prevBtn').style.display=cur>0?'block':'none';
+  document.getElementById('nextTxt').textContent=cur===sections.length-1?'提交合約':'繼續下一步';
+  for(let i=1;i<=4;i++){
+    const s=document.getElementById('s'+i);
+    const l=document.getElementById('sl'+i);
+    s.className='step'; l.className='step-label';
+    if(i<=cur+1){
+      s.classList.add(i<cur+1?'done':'active');
+      l.classList.add(i<cur+1?'done':'active');
+    }
+  }
+}
+
+/* ═══════════════════════════════════════
+   CHECK TOGGLE
+═══════════════════════════════════════ */
+function toggleCheck(el){
+  el.querySelector('.check-box').classList.toggle('checked');
+}
+
+/* ═══════════════════════════════════════
+   SIGNATURE
+═══════════════════════════════════════ */
+function switchSigMode(mode,parent,idx){
+  parent.querySelectorAll('.sig-type-tab').forEach((t,i)=>t.classList.toggle('active',i===(mode==='draw'?0:1)));
+  document.getElementById('drawPanel'+idx).style.display=mode==='draw'?'block':'none';
+  document.getElementById('typePanel'+idx).style.display=mode==='type'?'block':'none';
+}
+
+function initCanvases(){
+  [0,1].forEach(i=>{
+    const canvas=document.getElementById('canvas'+i);
+    const wrap=document.getElementById('wrap'+i);
+    if(!canvas||!wrap)return;
+    canvas.width=wrap.offsetWidth;
+    canvas.height=wrap.offsetHeight;
+    const ctx=canvas.getContext('2d');
+    ctx.strokeStyle='#C9A84C';
+    ctx.lineWidth=2.5;
+    ctx.lineCap='round';
+    ctx.lineJoin='round';
+    ctxs[i]=ctx;
+    const getPos=(e)=>{
+      const r=canvas.getBoundingClientRect();
+      const src=e.touches?e.touches[0]:e;
+      return{x:src.clientX-r.left,y:src.clientY-r.top};
+    };
+    // 移除舊 listeners 避免重複綁定
+    const newCanvas=canvas.cloneNode(true);
+    canvas.parentNode.replaceChild(newCanvas,canvas);
+    const c=document.getElementById('canvas'+i);
+    const ctx2=c.getContext('2d');
+    ctx2.strokeStyle='#C9A84C';ctx2.lineWidth=2.5;ctx2.lineCap='round';ctx2.lineJoin='round';
+    ctxs[i]=ctx2;
+    c.addEventListener('mousedown',e=>{drawing=true;activeCvs=i;const p=getPos(e);lx=p.x;ly=p.y;});
+    c.addEventListener('touchstart',e=>{e.preventDefault();drawing=true;activeCvs=i;const p=getPos(e);lx=p.x;ly=p.y;},{passive:false});
+    c.addEventListener('mousemove',e=>{if(!drawing||activeCvs!==i)return;const p=getPos(e);drawStroke(i,p);});
+    c.addEventListener('touchmove',e=>{e.preventDefault();if(!drawing||activeCvs!==i)return;const p=getPos(e);drawStroke(i,p);},{passive:false});
+    c.addEventListener('mouseup',()=>{drawing=false;});
+    c.addEventListener('touchend',()=>{drawing=false;});
+  });
+}
+
+function drawStroke(i,p){
+  ctxs[i].beginPath();ctxs[i].moveTo(lx,ly);ctxs[i].lineTo(p.x,p.y);ctxs[i].stroke();
+  lx=p.x;ly=p.y;
+  hasSig[i]=true;
+  document.getElementById('hint'+i).style.display='none';
+  document.getElementById('ts'+i).textContent='✓ '+new Date().toLocaleString('zh-TW');
+}
+
+function clearCanvas(i){
+  const c=document.getElementById('canvas'+i);
+  if(!c)return;
+  const ctx=c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  hasSig[i]=false;
+  document.getElementById('hint'+i).style.display='block';
+  document.getElementById('ts'+i).textContent='尚未簽署';
+}
+
+/* ═══════════════════════════════════════
+   FILE UPLOAD — 附件
+═══════════════════════════════════════ */
+function triggerUpload(i){
+  activeUpload=i;
+  document.getElementById('fileInput').click();
+}
+function onDragOver(e,i){e.preventDefault();document.getElementById('zone'+i).classList.add('drag');}
+function onDragLeave(i){document.getElementById('zone'+i).classList.remove('drag');}
+function onDrop(e,i){e.preventDefault();onDragLeave(i);addFiles(i,e.dataTransfer.files);}
+
+document.getElementById('fileInput').addEventListener('change',function(){
+  addFiles(activeUpload,this.files);this.value='';
+});
+
+function addFiles(idx,fileList){
+  Array.from(fileList).forEach(file=>{
+    if(file.size>20*1024*1024){showAlert('檔案大小不可超過20MB：'+file.name);return;}
+    uploadFiles[idx].push(file);
+    renderFileList(idx);
+  });
+}
+
+function renderFileList(idx){
+  const el=document.getElementById('files'+idx);
+  el.innerHTML='';
+  uploadFiles[idx].forEach((f,i)=>{
+    const size=f.size>1024*1024?(f.size/1024/1024).toFixed(1)+' MB':(f.size/1024).toFixed(0)+' KB';
+    const ext=f.name.split('.').pop().toLowerCase();
+    const ico={'pdf':'📄','doc':'📝','docx':'📝','jpg':'🖼','jpeg':'🖼','png':'🖼'}[ext]||'📁';
+    const div=document.createElement('div');
+    div.className='file-item';
+    div.innerHTML=`<span class="file-ico">${ico}</span><div class="file-info"><div class="file-name">${f.name}</div><div class="file-size">${size}</div></div><div class="file-rm" onclick="removeFile(${idx},${i})">×</div>`;
+    el.appendChild(div);
+  });
+}
+
+function removeFile(idx,i){
+  uploadFiles[idx].splice(i,1);
+  renderFileList(idx);
+}
+
+/* ═══════════════════════════════════════
+   FILE UPLOAD — 法代身份文件
+═══════════════════════════════════════ */
+function triggerGuardianUpload(type){
+  activeGuardianUploadType=type;
+  document.getElementById('guardianFileInput').click();
+}
+function onGuardianDragOver(e,type){e.preventDefault();document.getElementById('guardian'+(type==='id'?'Id':'Household')+'Zone').classList.add('drag');}
+function onGuardianDragLeave(type){document.getElementById('guardian'+(type==='id'?'Id':'Household')+'Zone').classList.remove('drag');}
+function onGuardianDrop(e,type){e.preventDefault();onGuardianDragLeave(type);addGuardianFiles(type,e.dataTransfer.files);}
+
+document.getElementById('guardianFileInput').addEventListener('change',function(){
+  addGuardianFiles(activeGuardianUploadType,this.files);this.value='';
+});
+
+function addGuardianFiles(type,fileList){
+  Array.from(fileList).forEach(file=>{
+    if(file.size>10*1024*1024){showAlert('法代文件大小不可超過10MB：'+file.name);return;}
+    guardianFiles[type].push(file);
+    renderGuardianFileList(type);
+  });
+}
+
+function renderGuardianFileList(type){
+  const elId=type==='id'?'guardianIdFiles':'guardianHouseholdFiles';
+  const el=document.getElementById(elId);
+  el.innerHTML='';
+  guardianFiles[type].forEach((f,i)=>{
+    const size=f.size>1024*1024?(f.size/1024/1024).toFixed(1)+' MB':(f.size/1024).toFixed(0)+' KB';
+    const ext=f.name.split('.').pop().toLowerCase();
+    const ico={'pdf':'📄','jpg':'🖼','jpeg':'🖼','png':'🖼'}[ext]||'📁';
+    const div=document.createElement('div');
+    div.className='file-item';
+    div.innerHTML=`<span class="file-ico">${ico}</span><div class="file-info"><div class="file-name">${f.name}</div><div class="file-size">${size}</div></div><div class="file-rm" onclick="removeGuardianFile('${type}',${i})">×</div>`;
+    el.appendChild(div);
+  });
+}
+
+function removeGuardianFile(type,i){
+  guardianFiles[type].splice(i,1);
+  renderGuardianFileList(type);
+}
+
+/* ═══════════════════════════════════════
+   WATERMARK ENGINE
+═══════════════════════════════════════ */
+const WM_LINE1='KAYON STUDIO';
+const WM_LINE2='僅限課程使用 · For Course Use Only';
+const WM_DATE=()=>new Date().toLocaleDateString('zh-TW');
+
+async function applyWatermark(file){
+  return new Promise((resolve)=>{
+    const ext=file.name.split('.').pop().toLowerCase();
+    if(!['jpg','jpeg','png','webp'].includes(ext)){
+      resolve({file,watermarked:false,preview:null,dataUrl:null,originalName:file.name});
+      return;
+    }
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const img=new Image();
+      img.onload=()=>{
+        const canvas=document.createElement('canvas');
+        const maxW=2400;
+        const scale=img.width>maxW?maxW/img.width:1;
+        canvas.width=Math.round(img.width*scale);
+        canvas.height=Math.round(img.height*scale);
+        const ctx=canvas.getContext('2d');
+        ctx.drawImage(img,0,0,canvas.width,canvas.height);
+        // 斜向浮水印
+        ctx.save();
+        ctx.rotate(-32*Math.PI/180);
+        const fs=Math.max(14,Math.round(canvas.width*0.055));
+        const ss=Math.max(10,Math.round(canvas.width*0.033));
+        const ds=Math.max(9,Math.round(canvas.width*0.026));
+        const stepX=Math.round(canvas.width*0.44);
+        const stepY=Math.round(canvas.height*0.19);
+        const spread=Math.max(canvas.width,canvas.height)*1.8;
+        for(let y=-spread;y<spread;y+=stepY){
+          for(let x=-spread;x<spread;x+=stepX){
+            ctx.font='600 '+fs+'px "DM Sans",Arial,sans-serif';
+            ctx.fillStyle='rgba(201,168,76,0.20)';
+            ctx.fillText(WM_LINE1,x,y);
+            ctx.font='400 '+ss+'px "DM Sans",Arial,sans-serif';
+            ctx.fillStyle='rgba(201,168,76,0.14)';
+            ctx.fillText(WM_LINE2,x,y+fs*1.3);
+            ctx.font='400 '+ds+'px "DM Mono",monospace';
+            ctx.fillStyle='rgba(201,168,76,0.10)';
+            ctx.fillText(WM_DATE(),x,y+fs*1.3+ss*1.3);
+          }
+        }
+        ctx.restore();
+        // 右下角印章框
+        const sw=Math.round(canvas.width*0.26);
+        const sh=Math.round(sw*0.38);
+        const sx=canvas.width-sw-12;
+        const sy=canvas.height-sh-12;
+        ctx.save();
+        ctx.strokeStyle='rgba(201,168,76,0.55)';
+        ctx.lineWidth=Math.max(1.5,canvas.width*0.0025);
+        ctx.strokeRect(sx,sy,sw,sh);
+        ctx.textAlign='center';
+        const stampFS=Math.round(sw*0.18);
+        ctx.font='700 '+stampFS+'px "DM Sans",Arial';
+        ctx.fillStyle='rgba(201,168,76,0.55)';
+        ctx.fillText('KAYON STUDIO',sx+sw/2,sy+sh*0.42);
+        ctx.font='400 '+Math.round(stampFS*0.7)+'px "DM Mono",monospace';
+        ctx.fillText(WM_DATE(),sx+sw/2,sy+sh*0.75);
+        ctx.restore();
+        const dataUrl=canvas.toDataURL('image/jpeg',0.88);
+        resolve({file,watermarked:true,dataUrl,originalName:file.name});
+      };
+      img.src=e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+/* ═══════════════════════════════════════
+   SUBMIT CONTRACT — FIX: 隱藏 footer、tabs、progress
+═══════════════════════════════════════ */
+async function submitContract(){
+  // 顯示 loading
+  const overlay=document.getElementById('loadingOverlay');
+  overlay.classList.add('show');
+  document.getElementById('loadingText').textContent='合約提交中，請稍候…';
+
+  try {
+    // 模擬提交延遲（實際串接 GAS API 時換成 fetch）
+    await new Promise(r=>setTimeout(r,1800));
+
+    // 填入 success screen 資料
+    const no=document.getElementById('contractNo').textContent;
+    const name=document.getElementById('studentName').value;
+    const course=document.getElementById('courseType').value;
+    const now=new Date().toLocaleString('zh-TW');
+    document.getElementById('sNo').textContent=no;
+    document.getElementById('sName').textContent=name;
+    document.getElementById('sCourse').textContent=course;
+    document.getElementById('sTime').textContent=now;
+
+    overlay.classList.remove('show');
+
+    /* ── FIX: 隱藏所有導覽 UI，讓 success screen 完整顯示 ── */
+    document.getElementById('mainFooter').style.display='none';
+    document.getElementById('mainTabs').style.display='none';
+    document.getElementById('progressWrap').style.display='none';
+
+    // 隱藏所有 pages，顯示 success screen
+    document.querySelectorAll('.page').forEach(p=>p.style.display='none');
+    const ss=document.getElementById('successScreen');
+    ss.style.display='flex';
+
+    // 更新 header badge
+    document.getElementById('headerBadge').textContent='簽署完成 ✓';
+    document.getElementById('headerBadge').style.background='rgba(76,175,80,0.12)';
+    document.getElementById('headerBadge').style.borderColor='rgba(76,175,80,0.3)';
+    document.getElementById('headerBadge').style.color='#4CAF50';
+
+    // scroll to top
+    window.scrollTo({top:0,behavior:'smooth'});
+
+  } catch(err) {
+    overlay.classList.remove('show');
+    showAlert('提交失敗，請稍後再試或聯繫 KAYON STUDIO');
+    console.error(err);
+  }
+}
+
+/* ═══════════════════════════════════════
+   GO TO PRO360 — FIX: 正確取得所選方案 URL
+═══════════════════════════════════════ */
+function goToPro360(){
+  const sel=document.getElementById('courseType');
+  const opt=sel&&sel.selectedIndex>0?sel.options[sel.selectedIndex]:null;
+  const url=opt&&opt.getAttribute('data-url')?opt.getAttribute('data-url'):pro360Url;
+  window.open(url,'_blank');
+}
+
+/* ═══════════════════════════════════════
+   EXPORT PDF
+═══════════════════════════════════════ */
+function exportPDF(){
+  const no=document.getElementById('contractNo').textContent;
+  const name=document.getElementById('studentName').value||'學員';
+  const course=document.getElementById('courseType').value||'—';
+  const date=document.getElementById('signDate').textContent;
+  const now=new Date().toLocaleString('zh-TW');
+
+  const html=`<!DOCTYPE html>
+<html lang="zh-TW"><head><meta charset="UTF-8">
+<title>KAYON STUDIO 課程合約 ${no}</title>
+<style>
+  body{font-family:"Microsoft JhengHei","PingFang TC",sans-serif;font-size:12pt;color:#1a1a1a;max-width:700px;margin:40px auto;padding:0 24px;line-height:1.8}
+  h1{font-size:18pt;text-align:center;margin-bottom:6px}
+  .sub{text-align:center;color:#555;font-size:10pt;margin-bottom:30px}
+  table{width:100%;border-collapse:collapse;margin-bottom:20px}
+  td{padding:8px 12px;border:1px solid #ddd;font-size:11pt}
+  td:first-child{background:#f7f7f7;font-weight:600;width:30%}
+  h2{font-size:12pt;margin:24px 0 6px;border-left:3px solid #C9A84C;padding-left:10px}
+  ul{margin:0 0 12px 20px;padding:0}
+  li{margin-bottom:4px;font-size:11pt}
+  .sig-block{margin-top:40px;display:flex;justify-content:space-between}
+  .sig-item{text-align:center;flex:1}
+  .sig-line{border-top:1px solid #555;margin:60px 20px 6px}
+  .footer{margin-top:40px;text-align:center;font-size:9pt;color:#888;border-top:1px solid #eee;padding-top:12px}
+</style></head><body>
+<h1>KAYON STUDIO 線上課程電子合約書</h1>
+<div class="sub">KARBØN × GAIA ENTERTAINMENT</div>
+<table>
+  <tr><td>合約編號</td><td>${no}</td></tr>
+  <tr><td>學員姓名</td><td>${name}</td></tr>
+  <tr><td>課程方案</td><td>${course}</td></tr>
+  <tr><td>簽署日期</td><td>${date}</td></tr>
+  <tr><td>簽署時間</td><td>${now}</td></tr>
+</table>
+<h2>§1 付款規範</h2>
+<ul>
+  <li>課程方案與付款方式依雙方書面確認內容為準</li>
+  <li>優惠方案不得同時並行，以最後確認方案為準</li>
+  <li>完成付款後始完成課程預約，未付款前名額不予保留</li>
+  <li>付款確認後系統自動發送確認通知至學員電子信箱</li>
+</ul>
+<h2>§2 課程進行規範</h2>
+<ul>
+  <li>使用 Google Meet 進行線上一對一授課</li>
+  <li>課程時間以 Google Calendar 排程為準，雙方須事先確認</li>
+  <li>遲到超過10分鐘視同缺席，該堂課計為已消耗</li>
+  <li>課程不得自行錄音或錄影，違者終止合約且不予退費</li>
+  <li>講師將提供課程講義及相關數位教材供學員使用</li>
+</ul>
+<h2>§3 改期與取消規定</h2>
+<ul>
+  <li>改期申請須透過 LINE 官方系統提前24小時完成操作</li>
+  <li>課程堂數與紀錄由系統自動管理，不接受人工調整</li>
+  <li>當月未使用堂數不累積至下月，逾期視同自動放棄</li>
+  <li>課程開始後不提供退款，轉讓須提前書面告知講師</li>
+  <li>講師因故取消課程，全額補回堂數或協議退費</li>
+</ul>
+<h2>§4 智慧財產權</h2>
+<ul>
+  <li>課程內容、教材、教學方法屬 KAYON STUDIO 智慧財產</li>
+  <li>未經書面授權不得外流、轉載、販售任何課程相關內容</li>
+  <li>學員課程中創作之作品，著作權歸學員本人所有</li>
+  <li>學員同意 KAYON STUDIO 以匿名形式於作品集引用學員作品</li>
+</ul>
+<h2>法律效力聲明</h2>
+<p>本合約經電子簽署後，依據中華民國《電子簽章法》第4條，具備與紙本合約相同之完整法律效力。</p>
+<div class="sig-block">
+  <div class="sig-item"><div class="sig-line"></div>學員簽名</div>
+  <div class="sig-item"><div class="sig-line"></div>KAYON STUDIO 代表</div>
+</div>
+<div class="footer">KAYON STUDIO × KARBØN × GAIA ENTERTAINMENT ｜ 合約編號 ${no} ｜ ${now}</div>
+</body></html>`;
+
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`KAYON_合約_${no}_${name}.html`;
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),3000);
+}
+</script>
 </body>
 </html>
