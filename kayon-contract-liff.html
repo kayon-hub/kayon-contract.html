@@ -359,8 +359,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
       <div><div class="section-num">04 — SIGNATURE</div><div class="section-title">電子簽名</div></div>
     </div>
     <div class="notice" style="margin-bottom:16px"><div class="notice-body">本人已詳細閱讀合約所有條款，同意遵守各項規定。依《電子簽章法》本簽名具完整法律效力。</div></div>
-
-    <!-- ★ 學員簽名 -->
     <div style="margin-bottom:18px">
       <div class="field-label" style="margin-bottom:8px">學員簽名 <span class="req">*</span></div>
       <div class="sig-type-tabs">
@@ -379,10 +377,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
         <div class="field"><input type="text" id="typedSig0" placeholder="輸入姓名作為電子簽名" oninput="onTyped(0)" style="font-size:20px;font-family:'DM Mono',monospace;color:var(--gold);letter-spacing:3px;text-align:center"></div>
       </div>
     </div>
-
     <div class="divider"></div>
-
-    <!-- ★ 法代簽名（未成年必填） -->
     <div id="gSigBlock" style="display:none">
       <div class="field-label" style="margin-bottom:8px">法定代理人簽名 <span class="req">*</span><span style="color:var(--red);font-size:10px;margin-left:6px">未成年必填，缺簽無法提交</span></div>
       <span class="sig-badge need" id="sigNeed1">✗ 法代尚未簽名，無法提交</span>
@@ -391,8 +386,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
       <div class="sig-row"><button class="sig-clear" onclick="clr(1)">清除重簽</button><div class="sig-timestamp" id="t1">尚未簽署</div></div>
       <div class="divider"></div>
     </div>
-
-    <!-- ★ 最終確認框 -->
     <div class="error-notice" id="finalCheckError">⚠️ 請勾選全部確認事項後方可提交合約</div>
     <div id="finalChecks">
       <div class="check-item" onclick="toggleCheck(this,'finalCheckError')"><div class="check-box"></div><div class="check-text">已閱讀全部合約內容，同意所有條款，確認填寫資料正確無誤</div></div>
@@ -458,8 +451,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 
 <script>
 /* ════════ CONFIG ════════ */
-const LIFF_ID  = '2010027736-kgBDDUmh';
-const GAS_URL  = 'https://script.google.com/macros/s/AKfycbzpMIhdFGQZ23pBroz01mR7F-rJb3LguJsULP9Z3NDw0sWDVcqA_GalRsgMlhz1--Xs/exec';
+const LIFF_ID = '2010027736-kgBDDUmh';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbytDkvfXSFIhOxOQKx8LAOtdu3MJKGWUPw3T9xu_jAQNbrVE6EcKEsqINOkw_AIU7wQ/exec';
 
 /* ════════ STATE ════════ */
 const sections = ['info','contract','guardian','sign','upload'];
@@ -588,7 +581,6 @@ function updateP360(){
 
 /* ════════ NAVIGATION ════════ */
 function go(s){
-  // ★ 成年人嘗試進入法代頁面 → 封鎖並提示
   if(s==='guardian' && !isMinor()){
     showAlert('您已成年，無需填寫法定代理人同意書');
     return;
@@ -604,7 +596,6 @@ function go(s){
   updateGuardianTab();
 }
 
-// ★ 法代 tab 視覺狀態同步
 function updateGuardianTab(){
   const tabs=document.querySelectorAll('.tab');
   const guardianTab=tabs[2];
@@ -649,12 +640,8 @@ function toggleCheck(el, errId){
   }
 }
 
-/* ════════════════════════════════════════
-   ★★★ VALIDATE — 嚴格版 ★★★
-════════════════════════════════════════ */
+/* ════════ VALIDATE ════════ */
 function validateStep(section){
-
-  /* ── INFO ── */
   if(section==='info'){
     const name=document.getElementById('studentName').value.trim();
     const birth=document.getElementById('studentBirth').value;
@@ -669,8 +656,6 @@ function validateStep(section){
     if(!course){ showAlert('請選擇課程方案');     markErr('courseType');   return false; }
     return true;
   }
-
-  /* ── GUARDIAN ── */
   if(section==='guardian' && isMinor()){
     const gN=document.getElementById('gN').value.trim();
     const gR=document.getElementById('gR').value;
@@ -680,8 +665,6 @@ function validateStep(section){
     if(!gR){ showAlert('請選擇法定代理人與學員關係'); markErr('gR'); return false; }
     if(!gP){ showAlert('請填寫法定代理人聯絡電話');  markErr('gP'); return false; }
     if(!gE){ showAlert('請填寫法定代理人電子信箱');  markErr('gE'); return false; }
-
-    // ★ 身份文件必須上傳
     if(!gDocs.id.length && !gDocs.hh.length){
       showAlert('未成年學員必須上傳法定代理人身份證明文件');
       const errEl=document.getElementById('gDocError');
@@ -695,8 +678,6 @@ function validateStep(section){
     document.getElementById('gDocError').classList.remove('show');
     document.getElementById('gIdZone').classList.remove('error-zone');
     document.getElementById('gHhZone').classList.remove('error-zone');
-
-    // ★ 全部同意框必須勾選
     const boxes=document.querySelectorAll('#gChecks .check-box');
     const unchecked=[...boxes].filter(b=>!b.classList.contains('checked'));
     if(unchecked.length){
@@ -709,10 +690,7 @@ function validateStep(section){
     document.getElementById('gCheckError').classList.remove('show');
     return true;
   }
-
-  /* ── SIGN ── */
   if(section==='sign'){
-    // ★ 學員簽名：手寫或打字必須完成其中一個
     const drawVisible=document.getElementById('drawPanel0').style.display!=='none';
     if(drawVisible){
       if(!canvasHasStroke('cv0')){
@@ -730,8 +708,6 @@ function validateStep(section){
         return false;
       }
     }
-
-    // ★ 法代簽名（未成年強制）
     if(isMinor()){
       if(!canvasHasStroke('cv1')){
         showAlert('未成年學員必須完成法定代理人簽名');
@@ -742,8 +718,6 @@ function validateStep(section){
         return false;
       }
     }
-
-    // ★ 最終確認框全部必須勾選
     const finalBoxes=document.querySelectorAll('#finalChecks .check-box');
     const uncheckedF=[...finalBoxes].filter(b=>!b.classList.contains('checked'));
     if(uncheckedF.length){
@@ -756,14 +730,9 @@ function validateStep(section){
     document.getElementById('finalCheckError').classList.remove('show');
     return true;
   }
-
   return true;
 }
 
-/* ════════════════════════════════════════
-   ★★★ FULL PRE-SUBMIT VALIDATE ★★★
-   防止 tab 跳過任何一步直接送出
-════════════════════════════════════════ */
 function fullValidate(){
   if(!validateStep('info'))    { go('info');     return false; }
   if(isMinor()&&!validateStep('guardian')){ go('guardian'); return false; }
@@ -776,7 +745,6 @@ function next(){
   if(!validateStep(sections[cur])) return;
   if(cur < sections.length-1){
     let nextS = sections[cur+1];
-    // ★ 成年人自動跳過法代頁面
     if(nextS === 'guardian' && !isMinor()) nextS = 'sign';
     go(nextS);
   } else {
@@ -786,7 +754,6 @@ function next(){
 function prev(){
   if(cur > 0){
     let prevS = sections[cur-1];
-    // ★ 成年人從 sign 往回也跳過法代
     if(prevS === 'guardian' && !isMinor()) prevS = 'contract';
     go(prevS);
   }
@@ -906,11 +873,9 @@ function goP360(){
   else window.open(p360Url,'_blank');
 }
 
-/* ════════════════════════════════════════
-   ★ SUBMIT — fullValidate() 全局把關
-════════════════════════════════════════ */
+/* ════════ SUBMIT ════════ */
 async function submit(){
-  if(!fullValidate()) return; // ★ 全局防線
+  if(!fullValidate()) return;
 
   document.getElementById('submitOverlay').classList.add('show');
   try{
@@ -936,7 +901,6 @@ async function submit(){
       note: ''
     };
 
-    // Success screen 資料
     document.getElementById('sNo').textContent = no;
     document.getElementById('sN').textContent  = name;
     document.getElementById('sC').textContent  = course;
@@ -944,7 +908,6 @@ async function submit(){
 
     document.getElementById('submitOverlay').classList.remove('show');
 
-    // ★ 隱藏所有導覽 UI
     document.getElementById('mainContent').style.display  = 'none';
     document.getElementById('footer').style.display       = 'none';
     document.getElementById('mainTabs').style.display     = 'none';
@@ -959,7 +922,6 @@ async function submit(){
 
     window.scrollTo({top:0,behavior:'smooth'});
 
-    // 非同步：LINE 訊息 + GAS
     sendLineMsg(payload);
     fetch(GAS_URL,{
       method:'POST', mode:'no-cors',
