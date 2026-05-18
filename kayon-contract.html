@@ -842,16 +842,20 @@ animation:spin 0.8s linear infinite;
 
 </div><!-- .content -->
 
-<!-- FOOTER — FIX: submitContract 後會隱藏此區塊 -->
-<div class="footer" id="mainFooter">
-  <button class="btn-primary" id="nextBtn" onclick="nextStep()">
-    <span id="nextTxt">繼續下一步</span><span>→</span>
-  </button>
-  <button class="btn-secondary" id="prevBtn" onclick="prevStep()" style="display:none">← 上一步</button>
-  <div class="footer-note">🔒 256-bit 加密傳輸 · 符合電子簽章法</div>
-</div>
-
-</div><!-- .app -->
+// 在 submitContract() 裡，setTimeout 那行改掉，換成：
+const payload = {
+  action: 'submitContract',
+  contractNo: no, name, course,
+  phone: document.getElementById('studentPhone').value,
+  email: document.getElementById('studentEmail').value,
+  time: now
+};
+fetch('https://script.google.com/macros/s/AKfycbytDkvfXSFIhOxOQKx8LAOtdu3MJKGWUPw3T9xu_jAQNbrVE6EcKEsqINOkw_AIU7wQ/exec', {
+  method: 'POST', mode: 'no-cors',
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify(payload)
+}).catch(e => console.log('GAS error', e));
+await new Promise(r=>setTimeout(r,1800));
 
 <script>
 /* ═══════════════════════════════════════
