@@ -1186,8 +1186,9 @@ const WM_LINE1='KAYON STUDIO';
 const WM_LINE2='僅限課程使用 · For Course Use Only';
 const WM_DATE=()=>new Date().toLocaleDateString('zh-TW');
 
-async function applyWatermark(file){
-  return new Promise((resolve)=>{
+async function submitContract(){
+  // 顯示 loading
+  const overlay=document.getElementById('loadingOverlay');
     const ext=file.name.split('.').pop().toLowerCase();
     if(!['jpg','jpeg','png','webp'].includes(ext)){
       resolve({file,watermarked:false,preview:null,dataUrl:null,originalName:file.name});
@@ -1256,9 +1257,7 @@ async function applyWatermark(file){
 /* ═══════════════════════════════════════
    SUBMIT CONTRACT — FIX: 隱藏 footer、tabs、progress
 ═══════════════════════════════════════ */
-async function submitContract(){
-  // 顯示 loading
-  const overlay=document.getElementById('loadingOverlay');
+
   overlay.classList.add('show');
   document.getElementById('loadingText').textContent='合約提交中，請稍候…';
 
